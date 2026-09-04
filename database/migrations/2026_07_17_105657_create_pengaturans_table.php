@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('pengaturans', function (Blueprint $table) {
             $table->id();
-            $table->string('nama_pemerintah')->default('PEMERINTAH KABUPATEN TAPIN');
-            $table->string('nama_instansi')->default('BADAN KEUANGAN DAN ASET DAERAH');
-            $table->string('jalan')->default('Jalan Datu Nuraya Kawasan Perkantoran Rantau Baru');
-            $table->string('kecamatan')->default('RT. 01 Kelurahan Rangda Malingkung Kecamatan Tapin Utara Telp. 0517 2035173');
-            $table->string('kontak')->default('Kode Pos 71114 Email: bkad@tapinkab.go.id');
-            $table->string('kota')->default('RANTAU');
+            $table->string('nama_pemerintah')->default('PEMERINTAH KOTA BANJARBARU');
+            $table->string('nama_instansi')->default('BADAN PENGELOLAAN KEUANGAN DAN ASET DAERAH');
+            $table->string('jalan')->default('Jl. Panglima Batur No. 1');
+            $table->string('kecamatan')->default('Kelurahan Loktabat Utara, Kecamatan Banjarbaru Utara');
+            $table->string('kontak')->default('Kode Pos 70711 Telp. (0511) 4772545');
+            $table->string('kota')->default('BANJARBARU');
             $table->text('logo')->nullable();
             
             // Penandatangan (Mengetahui)

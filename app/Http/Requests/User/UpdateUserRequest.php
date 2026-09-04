@@ -28,7 +28,7 @@ class UpdateUserRequest extends FormRequest
             'name' => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:users,username,' . $userId,
             'email' => 'required|string|email|max:255|unique:users,email,' . $userId,
-            'role' => 'required|in:admin,konsolidator,operator',
+            'role' => 'required|in:admin,bank,konsolidator,inspektorat,operator',
             'skpd_id' => 'nullable|exists:skpds,id',
             'status' => 'boolean',
         ];

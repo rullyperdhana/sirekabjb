@@ -94,8 +94,63 @@
                                 </div>
                             </label>
                             <p class="text-[11px] text-on-surface-variant leading-relaxed mt-1">
-                                <b>Kontrol Akses Pengunduhan:</b> Jika diaktifkan (<b>ON</b>), Operator SKPD dapat mengunduh Surat Tanda Bukti Pemeriksaan Rekonsiliasi Digital (PDF) setelah berkas disahkan Valid oleh Konsolidator. Jika dinonaktifkan (<b>OFF</b>), tombol unduh bukti digital disembunyikan dari akun SKPD dan hanya dapat dicetak/diunduh oleh Admin BKAD &amp; Konsolidator.
+                                <b>Kontrol Akses Pengunduhan:</b> Jika diaktifkan (<b>ON</b>), Operator SKPD dapat mengunduh Surat Tanda Bukti Pemeriksaan Rekonsiliasi Digital (PDF) setelah seluruh tahapan verifikasi disahkan.
                             </p>
+                        </div>
+
+                        <!-- Setting Keamanan: Two-Factor Authentication (2FA) -->
+                        <div class="flex flex-col gap-2 p-4 bg-teal-500/10 rounded-xl border border-teal-500/30 mt-2">
+                            <label class="text-label-sm font-bold text-teal-800 flex items-center justify-between cursor-pointer" for="is_2fa_active">
+                                <span class="flex items-center gap-1.5">
+                                    <span class="material-symbols-outlined text-[18px] text-teal-700">security</span>
+                                    Fitur Two-Factor Authentication / 2FA (Google Authenticator)
+                                </span>
+                                <div class="relative inline-flex items-center">
+                                  <input type="checkbox" id="is_2fa_active" name="is_2fa_active" class="sr-only peer" value="1" {{ old('is_2fa_active', $pengaturan->is_2fa_active ?? false) ? 'checked' : '' }}>
+                                  <div class="w-11 h-6 bg-outline-variant peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-teal-500/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal-700"></div>
+                                </div>
+                            </label>
+                            <p class="text-[11px] text-on-surface-variant leading-relaxed">
+                                <b>Status Saat Ini:</b> Sistem 2FA dalam posisi <b>Nonaktif (Standby)</b>. Pengguna dapat menyiapkan perangkat di menu Profil, namun verifikasi 2FA saat login hanya akan diwajibkan jika opsi ini dinyalakan (<b>ON</b>).
+                            </p>
+                            
+                            <div class="pt-2 border-t border-teal-500/20">
+                                <label class="text-[11px] font-semibold text-teal-900 flex items-center justify-between cursor-pointer" for="is_2fa_mandatory_for_critical_roles">
+                                    <span>Wajibkan 2FA untuk Verifikator Kritis (Admin, Bank Kalsel, BPKAD, Inspektorat)</span>
+                                    <input type="checkbox" id="is_2fa_mandatory_for_critical_roles" name="is_2fa_mandatory_for_critical_roles" class="rounded text-teal-700 focus:ring-teal-600 w-4 h-4" value="1" {{ old('is_2fa_mandatory_for_critical_roles', $pengaturan->is_2fa_mandatory_for_critical_roles ?? false) ? 'checked' : '' }}>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Setting Format Nomor BA Dinamis -->
+                        <div class="flex flex-col gap-2 p-4 bg-primary/5 rounded-xl border border-primary/20 mt-2">
+                            <label class="text-label-sm font-bold text-primary flex items-center justify-between" for="format_nomor_ba">
+                                <span class="flex items-center gap-1.5">
+                                    <span class="material-symbols-outlined text-[18px] text-primary">tag</span>
+                                    Format Penomoran Berita Acara (BA)
+                                </span>
+                                <span class="text-[11px] font-semibold text-primary bg-primary/10 px-2 py-0.5 rounded-full">Dinamis</span>
+                            </label>
+                            <input type="text" id="format_nomor_ba" name="format_nomor_ba" 
+                                value="{{ old('format_nomor_ba', $pengaturan->format_nomor_ba ?? '900/{NOMOR}/BA-REKON/{KODE_SKPD}/{BULAN_ROMAWI}/{TAHUN}') }}" 
+                                class="h-11 px-3 rounded-lg border border-outline-variant bg-surface focus:border-primary focus:ring-2 focus:ring-primary/20 text-body-md font-mono w-full transition-all outline-none" 
+                                placeholder="Contoh: 900/{NOMOR}/BA-REKON/{KODE_SKPD}/{BULAN_ROMAWI}/{TAHUN}" />
+                            
+                            <div class="p-3 bg-surface-container rounded-lg border border-outline-variant/60 flex flex-col gap-1.5 text-[11px]">
+                                <div class="flex items-center justify-between font-semibold text-on-surface">
+                                    <span>Pratinjau Hasil Format:</span>
+                                    <span class="font-mono text-primary bg-primary/10 px-2 py-0.5 rounded" id="previewNomorBaBadge">{{ $previewNomorBa ?? '900/001/BA-REKON/1.01.01.0/IX/2026' }}</span>
+                                </div>
+                                <p class="text-on-surface-variant leading-relaxed">
+                                    <b>Tag Otomatis yang Tersedia:</b><br>
+                                    <code class="bg-surface px-1 py-0.5 rounded border text-primary font-mono">{NOMOR}</code> (Urutan 3 digit: 001) &bull;
+                                    <code class="bg-surface px-1 py-0.5 rounded border text-primary font-mono">{KODE_SKPD}</code> (Kode: 1.01.01.0) &bull;
+                                    <code class="bg-surface px-1 py-0.5 rounded border text-primary font-mono">{BULAN}</code> (Angka 01-12) &bull;
+                                    <code class="bg-surface px-1 py-0.5 rounded border text-primary font-mono">{BULAN_ROMAWI}</code> (Romawi: I s/d XII) &bull;
+                                    <code class="bg-surface px-1 py-0.5 rounded border text-primary font-mono">{TAHUN}</code> (Tahun anggaran) &bull;
+                                    <code class="bg-surface px-1 py-0.5 rounded border text-primary font-mono">{NAMA_SKPD}</code> (Nama Instansi)
+                                </p>
+                            </div>
                         </div>
                         
                         <div class="flex flex-col gap-1.5 mt-2">

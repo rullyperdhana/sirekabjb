@@ -327,7 +327,7 @@
                     </div>
                     <div>
                         <label class="block font-bold text-body-sm text-on-surface mb-1">Access Key ID (Username MinIO)</label>
-                        <input type="text" name="minio_access_key" value="{{ old('minio_access_key', $config['minio_access_key'] ?? '') }}" placeholder="admin_bkad_tapin" class="w-full h-11 border border-outline-variant rounded-xl px-4 bg-surface focus:ring-2 focus:ring-blue-500 outline-none font-mono text-sm text-on-surface">
+                        <input type="text" name="minio_access_key" value="{{ old('minio_access_key', $config['minio_access_key'] ?? '') }}" placeholder="admin_bpkad_banjarbaru" class="w-full h-11 border border-outline-variant rounded-xl px-4 bg-surface focus:ring-2 focus:ring-blue-500 outline-none font-mono text-sm text-on-surface">
                     </div>
                     <div>
                         <label class="block font-bold text-body-sm text-on-surface mb-1">Secret Access Key (Password MinIO)</label>

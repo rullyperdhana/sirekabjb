@@ -252,7 +252,7 @@
                     <div>
                         <label class="block font-bold text-body-sm text-on-surface mb-1.5">Filter Instansi / SKPD</label>
                         <select name="skpd_id" class="w-full h-10 border border-outline-variant rounded-lg px-3 bg-surface focus:ring-2 focus:ring-primary focus:border-primary outline-none text-on-surface font-body-sm">
-                            <option value="all">🏛️ Seluruh SKPD Kabupaten Tapin</option>
+                            <option value="all">🏛️ Seluruh SKPD Kota Banjarbaru</option>
                             @foreach($allSkpdList ?? [] as $sItem)
                                 <option value="{{ $sItem->id }}">{{ $sItem->kode }} - {{ $sItem->nama }}</option>
                             @endforeach

@@ -105,7 +105,7 @@
                 @php
                     $logoApp = ($pengaturan && $pengaturan->logo)
                         ? (Str::startsWith($pengaturan->logo, 'http') ? $pengaturan->logo : asset('storage/' . $pengaturan->logo))
-                        : null;
+                        : (file_exists(public_path('images/logo_banjarbaru.png')) ? asset('images/logo_banjarbaru.png') : null);
                 @endphp
                 @if($logoApp)
                     <img src="{{ $logoApp }}" alt="Logo Aplikasi" class="h-12 w-auto object-contain bg-white/10 rounded p-1.5 backdrop-blur-sm shadow-sm">
@@ -116,7 +116,7 @@
                 @endif
                 <div>
                     <h1 class="text-2xl font-bold tracking-tight text-white drop-shadow-sm leading-none mb-1">SiReKa</h1>
-                    <p class="text-[11px] text-white/80 font-semibold uppercase tracking-widest">Sistem Rekonsiliasi BKAD</p>
+                    <p class="text-[11px] text-white/80 font-semibold uppercase tracking-widest">Sistem Rekonsiliasi Kas BPKAD</p>
                 </div>
             </div>
             <div class="flex items-center gap-4">
@@ -140,7 +140,7 @@
         <div class="relative z-10 text-center mt-12 mb-8 px-6">
             <span class="inline-block py-1.5 px-4 rounded-full bg-white/10 border border-white/20 text-white/90 text-[10px] font-extrabold tracking-widest uppercase mb-6 shadow-sm backdrop-blur-md">TAHUN ANGGARAN {{ $tahunAktif }}</span>
             <h2 class="text-4xl md:text-5xl font-extrabold text-white mb-6 tracking-tight drop-shadow-md">Status Rekonsiliasi SKPD</h2>
-            <p class="text-lg md:text-xl text-white/80 max-w-3xl mx-auto font-light leading-relaxed">Pantau secara real-time progres penyelesaian data keuangan antar instansi di lingkungan Pemerintah Kabupaten Tapin.</p>
+            <p class="text-lg md:text-xl text-white/80 max-w-3xl mx-auto font-light leading-relaxed">Pantau secara real-time progres penyelesaian data keuangan antar instansi di lingkungan Pemerintah Kota Banjarbaru.</p>
         </div>
     </div>
 
@@ -229,7 +229,7 @@
 
     <footer class="bg-white border-t border-outline-variant/20 py-8 mt-auto">
         <div class="max-w-[1200px] mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-on-surface-variant font-medium">
-            <p>&copy; {{ date('Y') }} BKAD Kabupaten Tapin. All rights reserved.</p>
+            <p>&copy; {{ date('Y') }} BPKAD Kota Banjarbaru. All rights reserved.</p>
             <p class="text-[11px] uppercase tracking-widest opacity-80">Developed by <strong class="text-primary font-bold">rully.perdhana@gmail.com</strong></p>
         </div>
     </footer>

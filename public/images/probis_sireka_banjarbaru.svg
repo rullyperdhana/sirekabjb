@@ -1,0 +1,274 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 900" width="100%" height="100%" style="background:#f8fafc; font-family:'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+  <defs>
+    <!-- Gradients -->
+    <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#1e293b" />
+    </linearGradient>
+    <linearGradient id="skpdGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#059669" />
+      <stop offset="100%" stop-color="#047857" />
+    </linearGradient>
+    <linearGradient id="bankGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#2563eb" />
+      <stop offset="100%" stop-color="#1d4ed8" />
+    </linearGradient>
+    <linearGradient id="konsolGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#7c3aed" />
+      <stop offset="100%" stop-color="#6d28d9" />
+    </linearGradient>
+    <linearGradient id="inspekGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#d97706" />
+      <stop offset="100%" stop-color="#b45309" />
+    </linearGradient>
+    <linearGradient id="outputGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f766e" />
+      <stop offset="100%" stop-color="#047857" />
+    </linearGradient>
+
+    <!-- Filters -->
+    <filter id="cardShadow" x="-10%" y="-5%" width="120%" height="115%" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#0f172a" flood-opacity="0.08" />
+    </filter>
+    <filter id="badgeShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.15" />
+    </filter>
+
+    <!-- Marker Arrow -->
+    <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#64748b" />
+    </marker>
+    <marker id="arrowSuccess" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#10b981" />
+    </marker>
+    <marker id="arrowDanger" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#ef4444" />
+    </marker>
+  </defs>
+
+  <!-- Title Header Banner -->
+  <rect x="50" y="30" width="1300" height="95" rx="16" fill="url(#headerGrad)" filter="url(#cardShadow)" />
+  <text x="80" y="70" font-size="24" font-weight="800" fill="#ffffff" letter-spacing="0.5">ALUR PROSES BISNIS (PROBIS) SiReKa KOTA BANJARBARU</text>
+  <text x="80" y="100" font-size="14" font-weight="500" fill="#94a3b8">Sistem Rekonsiliasi Kas Daerah 4-Pilar: Operator SKPD ➔ Bank Kalsel ➔ Konsolidator BPKAD ➔ Inspektorat</text>
+
+  <!-- Tag / Status Badge -->
+  <rect x="1140" y="55" width="180" height="38" rx="19" fill="#3b82f6" fill-opacity="0.2" stroke="#60a5fa" stroke-width="1.5" />
+  <text x="1230" y="79" font-size="12" font-weight="700" fill="#93c5fd" text-anchor="middle">VERSI 2026.1 (BJB)</text>
+
+  <!-- ==================== PILAR 1: OPERATOR SKPD ==================== -->
+  <g transform="translate(60, 160)">
+    <!-- Card Container -->
+    <rect x="0" y="0" width="280" height="490" rx="16" fill="#ffffff" stroke="#e2e8f0" stroke-width="2" filter="url(#cardShadow)" />
+    <!-- Header -->
+    <path d="M 0 16 Q 0 0 16 0 L 264 0 Q 280 0 280 16 L 280 75 L 0 75 Z" fill="url(#skpdGrad)" />
+    <circle cx="35" cy="38" r="18" fill="#ffffff" fill-opacity="0.2" />
+    <text x="35" y="44" font-size="16" font-weight="900" fill="#ffffff" text-anchor="middle">1</text>
+    <text x="65" y="35" font-size="16" font-weight="800" fill="#ffffff">OPERATOR SKPD</text>
+    <text x="65" y="55" font-size="11" font-weight="500" fill="#d1fae5">Entri Kas &amp; Berkas Pendukung</text>
+
+    <!-- Content Items -->
+    <g transform="translate(20, 95)">
+      <!-- Item 1 -->
+      <rect x="0" y="0" width="240" height="60" rx="8" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1" />
+      <text x="12" y="24" font-size="12" font-weight="700" fill="#166534">1. Entri Transaksi Kas</text>
+      <text x="12" y="44" font-size="10.5" fill="#374151">Input Saldo BKU &amp; Saldo Bank Kalsel</text>
+
+      <!-- Item 2 -->
+      <rect x="0" y="72" width="240" height="75" rx="8" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1" />
+      <text x="12" y="94" font-size="12" font-weight="700" fill="#166534">2. Upload 5 Berkas Fisik</text>
+      <text x="12" y="112" font-size="10.5" fill="#374151">• Rekening Koran Bank Kalsel</text>
+      <text x="12" y="128" font-size="10" fill="#6b7280">• BKU, Register Kas, BA Kas Fisik</text>
+
+      <!-- Item 3: Status BA Tahap 1 -->
+      <rect x="0" y="159" width="240" height="90" rx="8" fill="#fffbeb" stroke="#fde68a" stroke-width="1" />
+      <text x="12" y="181" font-size="11.5" font-weight="700" fill="#b45309">⚠️ Status Berita Acara (BA):</text>
+      <text x="12" y="200" font-size="10.5" font-weight="600" fill="#92400e">• BELUM BISA DITERBITKAN</text>
+      <text x="12" y="218" font-size="10" fill="#78350f">• Hanya cetak &quot;Draft BA&quot;</text>
+      <text x="12" y="233" font-size="9.5" fill="#78350f">  (Watermark: DRAFT / BELUM SAH)</text>
+
+      <!-- Item 4: Action Button -->
+      <rect x="0" y="262" width="240" height="65" rx="10" fill="#047857" />
+      <text x="120" y="288" font-size="12" font-weight="700" fill="#ffffff" text-anchor="middle">KIRIM PENGAJUAN</text>
+      <text x="120" y="308" font-size="10.5" fill="#a7f3d0" text-anchor="middle">Status: Menunggu Pihak Bank</text>
+    </g>
+
+    <!-- Bottom Role Badge -->
+    <rect x="20" y="445" width="240" height="28" rx="6" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1" />
+    <text x="120" y="463" font-size="11" font-weight="600" fill="#475569" text-anchor="middle">Aktor: 87 SKPD Kota Banjarbaru</text>
+  </g>
+
+  <!-- Arrow 1 -> 2 -->
+  <path d="M 340 380 L 390 380" stroke="#64748b" stroke-width="3" fill="none" marker-end="url(#arrow)" />
+  <text x="365" y="370" font-size="10" font-weight="700" fill="#64748b" text-anchor="middle">KIRIM</text>
+
+  <!-- ==================== PILAR 2: PIHAK BANK ==================== -->
+  <g transform="translate(400, 160)">
+    <!-- Card Container -->
+    <rect x="0" y="0" width="280" height="490" rx="16" fill="#ffffff" stroke="#e2e8f0" stroke-width="2" filter="url(#cardShadow)" />
+    <!-- Header -->
+    <path d="M 0 16 Q 0 0 16 0 L 264 0 Q 280 0 280 16 L 280 75 L 0 75 Z" fill="url(#bankGrad)" />
+    <circle cx="35" cy="38" r="18" fill="#ffffff" fill-opacity="0.2" />
+    <text x="35" y="44" font-size="16" font-weight="900" fill="#ffffff" text-anchor="middle">2</text>
+    <text x="65" y="35" font-size="16" font-weight="800" fill="#ffffff">PIHAK BANK</text>
+    <text x="65" y="55" font-size="11" font-weight="500" fill="#bfdbfe">Bank Kalsel Cabang Banjarbaru</text>
+
+    <!-- Content Items -->
+    <g transform="translate(20, 95)">
+      <!-- Item 1 -->
+      <rect x="0" y="0" width="240" height="60" rx="8" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1" />
+      <text x="12" y="24" font-size="12" font-weight="700" fill="#1e40af">1. Akses Antrean Bank</text>
+      <text x="12" y="44" font-size="10.5" fill="#374151">Melihat usulan rekonsiliasi SKPD</text>
+
+      <!-- Item 2 -->
+      <rect x="0" y="72" width="240" height="85" rx="8" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1" />
+      <text x="12" y="94" font-size="12" font-weight="700" fill="#1e40af">2. Validasi Rekening Koran</text>
+      <text x="12" y="112" font-size="10.5" fill="#374151">• Cek Saldo Awal &amp; Saldo Akhir</text>
+      <text x="12" y="128" font-size="10.5" fill="#374151">• Cocokkan Mutasi Masuk/Keluar</text>
+      <text x="12" y="144" font-size="10" fill="#6b7280">• Uji file rekening koran resmi bank</text>
+
+      <!-- Branching Options -->
+      <!-- Opsi Revisi -->
+      <rect x="0" y="170" width="240" height="65" rx="8" fill="#fef2f2" stroke="#fecaca" stroke-width="1" />
+      <text x="12" y="192" font-size="11" font-weight="700" fill="#991b1b">✖ Selisih Angka Bank?</text>
+      <text x="12" y="210" font-size="10" fill="#dc2626">TOMBOL: REVISI BANK</text>
+      <text x="12" y="224" font-size="9" fill="#7f1d1d">(Kembali ke SKPD + Catatan Revisi)</text>
+
+      <!-- Opsi Setuju -->
+      <rect x="0" y="247" width="240" height="75" rx="10" fill="#1d4ed8" />
+      <text x="120" y="272" font-size="12" font-weight="700" fill="#ffffff" text-anchor="middle">✔ SAHKAN SALDO BANK</text>
+      <text x="120" y="292" font-size="10" fill="#bfdbfe" text-anchor="middle">Log Bank teregister &amp; terkunci</text>
+      <text x="120" y="308" font-size="9.5" fill="#dbeafe" text-anchor="middle">Lanjut ➔ Konsolidator BPKAD</text>
+    </g>
+
+    <!-- Bottom Role Badge -->
+    <rect x="20" y="445" width="240" height="28" rx="6" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1" />
+    <text x="120" y="463" font-size="11" font-weight="600" fill="#475569" text-anchor="middle">Role: bank (Akun Bank Kalsel)</text>
+  </g>
+
+  <!-- Rejection Loop Bank -> SKPD -->
+  <path d="M 400 400 C 350 430, 330 430, 340 395" stroke="#ef4444" stroke-width="2" stroke-dasharray="4,4" fill="none" marker-end="url(#arrowDanger)" />
+  <text x="370" y="435" font-size="9.5" font-weight="700" fill="#dc2626" text-anchor="middle">Revisi</text>
+
+  <!-- Arrow 2 -> 3 -->
+  <path d="M 680 380 L 730 380" stroke="#10b981" stroke-width="3" fill="none" marker-end="url(#arrowSuccess)" />
+  <text x="705" y="370" font-size="10" font-weight="700" fill="#059669" text-anchor="middle">VALID</text>
+
+  <!-- ==================== PILAR 3: KONSOLIDATOR ==================== -->
+  <g transform="translate(740, 160)">
+    <!-- Card Container -->
+    <rect x="0" y="0" width="280" height="490" rx="16" fill="#ffffff" stroke="#e2e8f0" stroke-width="2" filter="url(#cardShadow)" />
+    <!-- Header -->
+    <path d="M 0 16 Q 0 0 16 0 L 264 0 Q 280 0 280 16 L 280 75 L 0 75 Z" fill="url(#konsolGrad)" />
+    <circle cx="35" cy="38" r="18" fill="#ffffff" fill-opacity="0.2" />
+    <text x="35" y="44" font-size="16" font-weight="900" fill="#ffffff" text-anchor="middle">3</text>
+    <text x="65" y="35" font-size="16" font-weight="800" fill="#ffffff">KONSOLIDATOR</text>
+    <text x="65" y="55" font-size="11" font-weight="500" fill="#ddd6fe">BPKAD Kota Banjarbaru</text>
+
+    <!-- Content Items -->
+    <g transform="translate(20, 95)">
+      <!-- Item 1 -->
+      <rect x="0" y="0" width="240" height="60" rx="8" fill="#f5f3ff" stroke="#ddd6fe" stroke-width="1" />
+      <text x="12" y="24" font-size="12" font-weight="700" fill="#5b21b6">1. Terima Berkas Valid Bank</text>
+      <text x="12" y="44" font-size="10.5" fill="#374151">Hanya memproses yang lolos Bank</text>
+
+      <!-- Item 2 -->
+      <rect x="0" y="72" width="240" height="85" rx="8" fill="#f5f3ff" stroke="#ddd6fe" stroke-width="1" />
+      <text x="12" y="94" font-size="12" font-weight="700" fill="#5b21b6">2. Checklist 5 Dokumen Fisik</text>
+      <text x="12" y="112" font-size="10.5" fill="#374151">☑ Dokumen BA Kas SKPD</text>
+      <text x="12" y="128" font-size="10.5" fill="#374151">☑ Saldo Rekening Bank Kalsel</text>
+      <text x="12" y="144" font-size="10" fill="#6b7280">☑ Register Kas, Bukti Kas, BKU</text>
+
+      <!-- Branching Options -->
+      <!-- Opsi Revisi -->
+      <rect x="0" y="170" width="240" height="65" rx="8" fill="#fef2f2" stroke="#fecaca" stroke-width="1" />
+      <text x="12" y="192" font-size="11" font-weight="700" fill="#991b1b">✖ Dokumen Belum Lengkap?</text>
+      <text x="12" y="210" font-size="10" fill="#dc2626">TOMBOL: REVISI KONSOLIDATOR</text>
+      <text x="12" y="224" font-size="9" fill="#7f1d1d">(Catatan butir dokumen yg kurang)</text>
+
+      <!-- Opsi Setuju -->
+      <rect x="0" y="247" width="240" height="75" rx="10" fill="#6d28d9" />
+      <text x="120" y="272" font-size="12" font-weight="700" fill="#ffffff" text-anchor="middle">✔ SAHKAN KASDA</text>
+      <text x="120" y="292" font-size="10" fill="#ddd6fe" text-anchor="middle">Log Konsolidator teregister</text>
+      <text x="120" y="308" font-size="9.5" fill="#ede9fe" text-anchor="middle">Lanjut ➔ Inspektorat</text>
+    </g>
+
+    <!-- Bottom Role Badge -->
+    <rect x="20" y="445" width="240" height="28" rx="6" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1" />
+    <text x="120" y="463" font-size="11" font-weight="600" fill="#475569" text-anchor="middle">Role: konsolidator (BPKAD)</text>
+  </g>
+
+  <!-- Arrow 3 -> 4 -->
+  <path d="M 1020 380 L 1070 380" stroke="#10b981" stroke-width="3" fill="none" marker-end="url(#arrowSuccess)" />
+  <text x="1045" y="370" font-size="10" font-weight="700" fill="#059669" text-anchor="middle">VALID</text>
+
+  <!-- ==================== PILAR 4: INSPEKTORAT ==================== -->
+  <g transform="translate(1080, 160)">
+    <!-- Card Container -->
+    <rect x="0" y="0" width="280" height="490" rx="16" fill="#ffffff" stroke="#e2e8f0" stroke-width="2" filter="url(#cardShadow)" />
+    <!-- Header -->
+    <path d="M 0 16 Q 0 0 16 0 L 264 0 Q 280 0 280 16 L 280 75 L 0 75 Z" fill="url(#inspekGrad)" />
+    <circle cx="35" cy="38" r="18" fill="#ffffff" fill-opacity="0.2" />
+    <text x="35" y="44" font-size="16" font-weight="900" fill="#ffffff" text-anchor="middle">4</text>
+    <text x="65" y="35" font-size="16" font-weight="800" fill="#ffffff">INSPEKTORAT</text>
+    <text x="65" y="55" font-size="11" font-weight="500" fill="#fef3c7">Pengawasan &amp; Penerbitan BA</text>
+
+    <!-- Content Items -->
+    <g transform="translate(20, 95)">
+      <!-- Item 1 -->
+      <rect x="0" y="0" width="240" height="60" rx="8" fill="#fffbeb" stroke="#fde68a" stroke-width="1" />
+      <text x="12" y="24" font-size="12" font-weight="700" fill="#92400e">1. Pengawasan Internal</text>
+      <text x="12" y="44" font-size="10.5" fill="#374151">Cek jejak audit Bank &amp; Konsolidator</text>
+
+      <!-- Item 2 -->
+      <rect x="0" y="72" width="240" height="85" rx="8" fill="#fffbeb" stroke="#fde68a" stroke-width="1" />
+      <text x="12" y="94" font-size="12" font-weight="700" fill="#92400e">2. Penetapan Nomor BA</text>
+      <text x="12" y="112" font-size="10.5" fill="#374151">• Auto-generate nomor BA dinamis</text>
+      <text x="12" y="128" font-size="10" fill="#6b7280">  Format: 900/{NO}/BA-REKON/...</text>
+      <text x="12" y="144" font-size="10" fill="#374151">• Inspektorat bisa konfirmasi/edit</text>
+
+      <!-- Branching Options -->
+      <!-- Opsi Catatan -->
+      <rect x="0" y="170" width="240" height="65" rx="8" fill="#fef2f2" stroke="#fecaca" stroke-width="1" />
+      <text x="12" y="192" font-size="11" font-weight="700" fill="#991b1b">✖ Catatan Audit Internal?</text>
+      <text x="12" y="210" font-size="10" fill="#dc2626">TOMBOL: CATATAN AUDIT</text>
+      <text x="12" y="224" font-size="9" fill="#7f1d1d">(Kembalikan untuk klarifikasi)</text>
+
+      <!-- Opsi Sah Final & Terbitkan BA -->
+      <rect x="0" y="247" width="240" height="75" rx="10" fill="#b45309" />
+      <text x="120" y="272" font-size="12" font-weight="700" fill="#ffffff" text-anchor="middle">★ TERBITKAN &amp; SAHKAN BA</text>
+      <text x="120" y="292" font-size="10" fill="#fef3c7" text-anchor="middle">Nomor BA resmi diterbitkan</text>
+      <text x="120" y="308" font-size="9.5" fill="#fde68a" text-anchor="middle">Stempel Digital Seal SHA-256</text>
+    </g>
+
+    <!-- Bottom Role Badge -->
+    <rect x="20" y="445" width="240" height="28" rx="6" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1" />
+    <text x="120" y="463" font-size="11" font-weight="600" fill="#475569" text-anchor="middle">Role: inspektorat (Inspektorat Kota)</text>
+  </g>
+
+  <!-- ==================== BOTTOM OUTPUT BANNER ==================== -->
+  <g transform="translate(60, 685)">
+    <rect x="0" y="0" width="1300" height="175" rx="16" fill="url(#outputGrad)" filter="url(#cardShadow)" />
+    
+    <!-- Title -->
+    <text x="35" y="40" font-size="18" font-weight="800" fill="#ffffff">HASIL AKHIR (OUTPUT RESMI SIREKA SETELAH TAHAP 4 SELESAI)</text>
+    <text x="35" y="65" font-size="12" fill="#a7f3d0">Seluruh dokumen resmi di bawah ini baru dapat diunduh oleh SKPD setelah disahkan oleh Inspektorat Kota Banjarbaru</text>
+
+    <!-- Output 1: Berita Acara Rekonsiliasi Final -->
+    <g transform="translate(35, 85)">
+      <rect x="0" y="0" width="580" height="70" rx="10" fill="#ffffff" fill-opacity="0.12" stroke="#ffffff" stroke-width="1.5" />
+      <circle cx="35" cy="35" r="18" fill="#ffffff" />
+      <text x="35" y="42" font-size="16" text-anchor="middle">📄</text>
+      <text x="68" y="28" font-size="14" font-weight="800" fill="#ffffff">BERITA ACARA REKONSILIASI KAS RESMI (FINAL PDF)</text>
+      <text x="68" y="48" font-size="11" fill="#ecfdf5">Tercantum Nomor BA resmi, tanggal pengesahan, rincian mutasi SIPANDA vs Bank, dan tanda tangan sah.</text>
+    </g>
+
+    <!-- Output 2: Lembar Bukti Verifikasi Digital 4-Pilar -->
+    <g transform="translate(645, 85)">
+      <rect x="0" y="0" width="620" height="70" rx="10" fill="#ffffff" fill-opacity="0.12" stroke="#ffffff" stroke-width="1.5" />
+      <circle cx="35" cy="35" r="18" fill="#ffffff" />
+      <text x="35" y="42" font-size="16" text-anchor="middle">🛡️</text>
+      <text x="68" y="28" font-size="14" font-weight="800" fill="#ffffff">LEMBAR BUKTI VERIFIKASI DIGITAL 4-PILAR (SLIP RESMI)</text>
+      <text x="68" y="48" font-size="11" fill="#ecfdf5">Jejak audit 4 verifikator: Operator SKPD ➔ Bank Kalsel ➔ Konsolidator BPKAD ➔ Inspektorat + QR Audit Seal.</text>
+    </g>
+  </g>
+</svg>

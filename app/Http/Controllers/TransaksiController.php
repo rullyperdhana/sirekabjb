@@ -488,13 +488,38 @@ class TransaksiController extends Controller
         $transaksi->status_konsolidator = $status;
         $transaksi->checked_by = Auth::id();
         $transaksi->checked_at = now();
+
+        if ($status === 'valid') {
+            $transaksi->tahap_verifikasi = 'menunggu_inspektorat';
+            $tahapSesudah = 'menunggu_inspektorat';
+        } else {
+            $transaksi->tahap_verifikasi = 'revisi_konsolidator';
+            $transaksi->status_verifikasi = 'draft';
+            $tahapSesudah = 'revisi_konsolidator';
+        }
+
         $transaksi->save();
+
+        // Rekam Jejak Audit Trail 4-Pilar
+        \App\Models\VerifikasiLog::create([
+            'transaksi_id' => $transaksi->id,
+            'user_id' => Auth::id(),
+            'role' => Auth::user()->role,
+            'stage' => 'verifikasi_konsolidator',
+            'aksi' => $status === 'valid' ? 'setuju' : 'revisi',
+            'status_sebelum' => 'menunggu_konsolidator',
+            'status_sesudah' => $tahapSesudah,
+            'catatan' => $catatanText ?: ($status === 'valid' ? 'Dokumen rekonsiliasi kas dan 5 berkas fisik disahkan valid oleh Konsolidator.' : 'Berkas memerlukan perbaikan.'),
+            'trace_hash' => \App\Models\VerifikasiLog::createHash($transaksi->id, Auth::id(), 'verifikasi_konsolidator', $status === 'valid' ? 'setuju' : 'revisi', now()->timestamp),
+            'ip_address' => $request->ip(),
+            'user_agent' => $request->userAgent(),
+        ]);
 
         \Illuminate\Support\Facades\Log::info("Pemeriksaan Konsolidator SiReKa: Transaksi ID #{$transaksi->id} ({$transaksi->skpd->nama}) diperiksa oleh User #" . Auth::id() . " (" . Auth::user()->name . ") dengan status: {$status}");
 
         $msg = $status === 'valid' 
-            ? 'Laporan berhasil diperiksa dan ditandai VALID & SAH oleh Konsolidator.' 
-            : 'Hasil pemeriksaan berhasil disimpan sebagai PERLU PERBAIKAN. Silakan hubungi Admin Pusat untuk mengubah status menjadi Draft.';
+            ? 'Laporan berhasil diperiksa VALID oleh Konsolidator dan diteruskan ke Inspektorat untuk pengesahan akhir & penerbitan Berita Acara.' 
+            : 'Hasil pemeriksaan disimpan sebagai PERLU PERBAIKAN. Status transaksi dibuka ke Draft agar Operator SKPD dapat memperbaiki berkas.';
 
         $isSaveAndNext = ($request->input('action') === 'save_and_next');
 
@@ -518,6 +543,39 @@ class TransaksiController extends Controller
         return redirect()->route('transaksi.pemeriksaan', $transaksi->id)->with('success', $msg);
     }
 
+    public function submitToBank(Transaksi $transaksi)
+    {
+        if (Auth::user()->role === 'operator' && Auth::user()->skpd_id != $transaksi->skpd_id) {
+            abort(403, 'Anda tidak memiliki hak akses ke transaksi ini.');
+        }
+
+        if (!$transaksi->file_rekening_koran) {
+            return redirect()->back()->with('error', 'Wajib mengunggah file Rekening Koran Bank Kalsel sebelum mengajukan rekonsiliasi ke pihak Bank.');
+        }
+
+        $transaksi->update([
+            'tahap_verifikasi' => 'menunggu_bank',
+            'status_verifikasi' => 'verified', // Kunci formulir SKPD
+            'bank_status' => 'menunggu',
+        ]);
+
+        \App\Models\VerifikasiLog::create([
+            'transaksi_id' => $transaksi->id,
+            'user_id' => Auth::id(),
+            'role' => Auth::user()->role,
+            'stage' => 'pengajuan_skpd',
+            'aksi' => 'submit',
+            'status_sebelum' => 'skpd_draft',
+            'status_sesudah' => 'menunggu_bank',
+            'catatan' => 'Berkas rekonsiliasi kas dan rekening koran diajukan oleh SKPD ke pihak Bank Kalsel.',
+            'trace_hash' => \App\Models\VerifikasiLog::createHash($transaksi->id, Auth::id(), 'pengajuan_skpd', 'submit', now()->timestamp),
+            'ip_address' => request()->ip(),
+            'user_agent' => request()->userAgent(),
+        ]);
+
+        return redirect()->back()->with('success', 'Pengajuan rekonsiliasi kas berhasil dikirim ke Pihak Bank Kalsel.');
+    }
+
     public function resetToDraft(Transaksi $transaksi)
     {
         if (Auth::user()->role !== 'admin') {
@@ -525,53 +583,51 @@ class TransaksiController extends Controller
         }
 
         $transaksi->status_verifikasi = 'draft';
+        $transaksi->tahap_verifikasi = 'skpd_draft';
         $transaksi->save();
 
         \App\Models\TransaksiCatatan::create([
             'transaksi_id' => $transaksi->id,
             'user_id' => Auth::id(),
-            'status_pemeriksaan' => 'reset_draft',
-            'catatan' => 'Status transaksi dikembalikan ke DRAFT oleh Administrator Pusat (' . Auth::user()->name . ') untuk diperbaiki ulang oleh SKPD.',
+            'status_pemeriksaan' => 'draft',
+            'catatan' => 'Status transaksi dibuka kembali menjadi DRAFT oleh Administrator Pusat SiReKa.',
         ]);
 
-        \Illuminate\Support\Facades\Log::info("Audit Trail SiReKa: Transaksi ID #{$transaksi->id} ({$transaksi->skpd->nama}) diubah ke Draft oleh Admin #" . Auth::id() . " (" . Auth::user()->name . ")");
+        \App\Models\VerifikasiLog::create([
+            'transaksi_id' => $transaksi->id,
+            'user_id' => Auth::id(),
+            'role' => 'admin',
+            'stage' => 'pengajuan_skpd',
+            'aksi' => 'reset',
+            'status_sebelum' => $transaksi->tahap_verifikasi,
+            'status_sesudah' => 'skpd_draft',
+            'catatan' => 'Transaksi di-reset ke DRAFT oleh Administrator Pusat.',
+            'trace_hash' => \App\Models\VerifikasiLog::createHash($transaksi->id, Auth::id(), 'pengajuan_skpd', 'reset', now()->timestamp),
+            'ip_address' => request()->ip(),
+            'user_agent' => request()->userAgent(),
+        ]);
 
-        return redirect()->back()->with('success', "Transaksi untuk {$transaksi->skpd->nama} berhasil dikembalikan menjadi DRAFT. SKPD sekarang dapat memperbaiki data dan bukti dukung.");
+        return redirect()->back()->with('success', "Status transaksi {$transaksi->skpd->nama} periode bulan {$transaksi->periode_bulan} berhasil diubah menjadi Draft.");
     }
 
     public function cetakBuktiDigitalPdf(Transaksi $transaksi)
     {
         $user = Auth::user();
 
-        // Pemeriksaan Hak Akses
-        if (!in_array($user->role, ['admin', 'konsolidator'])) {
-            // Jika role Operator SKPD
-            if ($user->skpd_id && $user->skpd_id != $transaksi->skpd_id) {
-                abort(403, 'Anda tidak memiliki akses ke berkas instansi lain.');
-            }
-
-            // Periksa Saklar Pengaturan Admin
-            $globalPengaturan = \App\Models\Pengaturan::whereNull('skpd_id')->first();
-            $isDownloadAllowed = $globalPengaturan ? ($globalPengaturan->allow_skpd_download_bukti_digital ?? true) : true;
-
-            if (!$isDownloadAllowed) {
-                abort(403, 'Akses pengunduhan tanda bukti pemeriksaan digital saat ini dinonaktifkan oleh Administrator BKAD.');
-            }
+        // Hanya boleh dicetak jika minimal sudah disahkan konsolidator atau final inspektorat
+        if (!in_array($transaksi->status_konsolidator, ['valid']) && $transaksi->tahap_verifikasi !== 'disetujui_final') {
+            return redirect()->back()->with('error', 'Tanda bukti pemeriksaan digital hanya dapat diunduh jika status rekonsiliasi telah diverifikasi.');
         }
 
-        if ($transaksi->status_konsolidator !== 'valid') {
-            return redirect()->back()->with('error', 'Tanda bukti pemeriksaan digital hanya dapat diunduh jika status rekonsiliasi telah disahkan VALID oleh Konsolidator.');
-        }
-
-        $transaksi->load(['skpd', 'rekening', 'checker']);
+        $transaksi->load(['skpd', 'rekening', 'checker', 'bankChecker', 'inspektoratChecker', 'verifikasiLogs.user']);
 
         $pengaturan = $transaksi->skpd->pengaturan ?? \App\Models\Pengaturan::whereNull('skpd_id')->first() ?? new \App\Models\Pengaturan([
-            'nama_pemerintah' => 'PEMERINTAH KABUPATEN TAPIN',
-            'nama_instansi' => 'BADAN KEUANGAN DAN ASET DAERAH',
-            'jalan' => 'Jalan Datu Nuraya Kawasan Perkantoran Rantau Baru',
-            'kecamatan' => 'RT. 01 Kelurahan Rangda Malingkung Kecamatan Tapin Utara Telp. 0517 2035173',
-            'kontak' => 'Kode Pos 71114 Email: bkad@tapinkab.go.id',
-            'kota' => 'RANTAU',
+            'nama_pemerintah' => 'PEMERINTAH KOTA BANJARBARU',
+            'nama_instansi' => 'BADAN PENGELOLAAN KEUANGAN DAN ASET DAERAH',
+            'jalan' => 'Jalan Panglima Batur No. 1',
+            'kecamatan' => 'Kelurahan Komet, Kecamatan Banjarbaru Utara',
+            'kontak' => 'Telp. (0511) 4782098 Email: bpkad@banjarbarukota.go.id',
+            'kota' => 'BANJARBARU',
         ]);
 
         $namaBulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];

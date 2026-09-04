@@ -132,7 +132,7 @@
 
         <div class="mt-10 pt-6 border-t border-slate-800/60 text-xs text-slate-400 font-medium flex flex-wrap items-center justify-center gap-2">
             <span class="inline-block w-1.5 h-1.5 rounded-full bg-amber-500"></span>
-            <span>Badan Keuangan dan Aset Daerah (BKAD) Kabupaten Tapin</span>
+            <span>Badan Pengelolaan Keuangan dan Aset Daerah (BPKAD) Kota Banjarbaru</span>
             <span>&bull;</span>
             <span class="text-slate-500 font-mono">SiReKa v2.0 Enterprise</span>
         </div>

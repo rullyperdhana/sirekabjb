@@ -82,39 +82,60 @@
                                 Rp {{ number_format($trx->bank_saldo_akhir, 2, ',', '.') }}
                             </td>
                             <td class="py-3 px-4">
-                                <div class="space-y-1">
-                                    @if($trx->status_verifikasi == 'verified')
-                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-700 font-label-sm text-[11px] font-bold">
-                                        <span class="material-symbols-outlined text-[14px]">verified</span> Diverifikasi SKPD
-                                    </span>
-                                    @else
-                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-surface-container text-on-surface-variant font-label-sm text-[11px] font-semibold border border-outline-variant">
-                                        <span class="material-symbols-outlined text-[14px]">edit_note</span> Draft
-                                    </span>
-                                    @endif
-
-                                    <!-- Status Konsolidator -->
+                                <div class="space-y-1.5">
+                                    <!-- Tahapan Verifikasi 4-Pilar -->
                                     <div>
-                                        @if($trx->status_konsolidator === 'valid')
-                                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-emerald-600 text-white font-label-sm text-[10px] font-bold shadow-xs">
-                                                <span class="material-symbols-outlined text-[13px]">check_circle</span> Valid Konsolidator
+                                        @if($trx->tahap_verifikasi === 'disetujui_final')
+                                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-label-sm text-[11px] font-black border border-emerald-300">
+                                                <span class="material-symbols-outlined text-[13px]">verified</span> SAH FINAL (BA TERBIT)
                                             </span>
-                                        @elseif($trx->status_konsolidator === 'perlu_perbaikan')
-                                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-rose-600 text-white font-label-sm text-[10px] font-bold shadow-xs">
-                                                <span class="material-symbols-outlined text-[13px]">error</span> Perlu Perbaikan
+                                            @if($trx->nomor_ba)
+                                                <div class="text-[10px] font-mono text-emerald-800 font-bold mt-0.5">No: {{ $trx->nomor_ba }}</div>
+                                            @endif
+                                        @elseif($trx->tahap_verifikasi === 'menunggu_inspektorat')
+                                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 font-label-sm text-[10px] font-bold border border-amber-300">
+                                                <span class="material-symbols-outlined text-[13px]">hourglass_top</span> 4. Cek Inspektorat
+                                            </span>
+                                        @elseif($trx->tahap_verifikasi === 'revisi_inspektorat')
+                                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-rose-100 text-rose-800 font-label-sm text-[10px] font-bold">
+                                                <span class="material-symbols-outlined text-[13px]">error</span> 4. Catatan Inspektorat
+                                            </span>
+                                        @elseif($trx->tahap_verifikasi === 'menunggu_konsolidator')
+                                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-purple-100 text-purple-800 font-label-sm text-[10px] font-bold border border-purple-300">
+                                                <span class="material-symbols-outlined text-[13px]">checklist</span> 3. Cek Konsolidator
+                                            </span>
+                                        @elseif($trx->tahap_verifikasi === 'revisi_konsolidator' || $trx->status_konsolidator === 'perlu_perbaikan')
+                                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-rose-100 text-rose-800 font-label-sm text-[10px] font-bold">
+                                                <span class="material-symbols-outlined text-[13px]">cancel</span> 3. Revisi Kasda
+                                            </span>
+                                        @elseif($trx->tahap_verifikasi === 'menunggu_bank')
+                                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-800 font-label-sm text-[10px] font-bold border border-blue-300">
+                                                <span class="material-symbols-outlined text-[13px]">account_balance</span> 2. Cek Bank Kalsel
+                                            </span>
+                                        @elseif($trx->tahap_verifikasi === 'revisi_bank' || $trx->bank_status === 'revisi')
+                                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-rose-100 text-rose-800 font-label-sm text-[10px] font-bold">
+                                                <span class="material-symbols-outlined text-[13px]">error</span> 2. Revisi Bank
                                             </span>
                                         @else
-                                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-blue-500/10 text-blue-700 font-label-sm text-[10px] font-medium border border-blue-500/20">
-                                                <span class="material-symbols-outlined text-[13px]">pending</span> Menunggu Cek
+                                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-label-sm text-[10px] font-medium border border-slate-300">
+                                                <span class="material-symbols-outlined text-[13px]">edit_note</span> 1. Draf SKPD
                                             </span>
                                         @endif
                                     </div>
 
-                                    @if($trx->catatan_konsolidator_terakhir)
-                                    <div class="text-[11px] text-rose-700 font-medium italic flex items-start gap-1 mt-0.5 bg-rose-500/5 p-1 rounded border border-rose-500/20" title="{{ $trx->catatan_konsolidator_terakhir }}">
-                                        <span class="material-symbols-outlined text-[13px] text-rose-600 shrink-0 mt-0.5">comment</span>
-                                        <span>Catatan: {{ \Illuminate\Support\Str::limit($trx->catatan_konsolidator_terakhir, 40) }}</span>
-                                    </div>
+                                    <!-- Catatan Terakhir -->
+                                    @if($trx->bank_catatan && in_array($trx->tahap_verifikasi, ['revisi_bank']))
+                                        <div class="text-[10px] text-rose-700 font-medium italic p-1 bg-rose-50 rounded border border-rose-200">
+                                            <b>Bank:</b> {{ \Illuminate\Support\Str::limit($trx->bank_catatan, 35) }}
+                                        </div>
+                                    @elseif($trx->catatan_konsolidator_terakhir && in_array($trx->tahap_verifikasi, ['revisi_konsolidator']))
+                                        <div class="text-[10px] text-rose-700 font-medium italic p-1 bg-rose-50 rounded border border-rose-200">
+                                            <b>Kasda:</b> {{ \Illuminate\Support\Str::limit($trx->catatan_konsolidator_terakhir, 35) }}
+                                        </div>
+                                    @elseif($trx->inspektorat_catatan && in_array($trx->tahap_verifikasi, ['revisi_inspektorat']))
+                                        <div class="text-[10px] text-rose-700 font-medium italic p-1 bg-rose-50 rounded border border-rose-200">
+                                            <b>Audit:</b> {{ \Illuminate\Support\Str::limit($trx->inspektorat_catatan, 35) }}
+                                        </div>
                                     @endif
                                 </div>
                             </td>
@@ -126,36 +147,39 @@
                                     if($trx->file_buku_pembantu_bank) $docCount++;
                                     if($trx->file_rekening_koran) $docCount++;
                                 @endphp
-                                <a href="{{ route('transaksi.upload', $trx->id) }}" class="inline-flex items-center gap-1 {{ $docCount >= 4 ? 'text-emerald-600 font-bold' : ($docCount > 0 ? 'text-secondary hover:text-secondary-container' : 'text-primary hover:text-primary-container') }} transition-colors text-label-sm font-label-sm" title="Lihat / Kelola 4 Berkas Dokumen">
+                                <a href="{{ route('transaksi.upload', $trx->id) }}" class="inline-flex items-center gap-1 {{ $docCount >= 4 ? 'text-emerald-600 font-bold' : ($docCount > 0 ? 'text-secondary hover:text-secondary-container' : 'text-primary hover:text-primary-container') }} transition-colors text-label-sm font-label-sm" title="Lihat / Kelola Berkas Dokumen">
                                     <span class="material-symbols-outlined text-[18px]">folder_open</span>
                                     <span>{{ $docCount }}/4</span>
                                 </a>
                             </td>
                             <td class="py-3 px-4 text-center">
                                 <div class="flex items-center justify-center gap-1">
-                                    @php
-                                        $globalPengaturan = \App\Models\Pengaturan::whereNull('skpd_id')->first();
-                                        $isDownloadAllowed = $globalPengaturan ? ($globalPengaturan->allow_skpd_download_bukti_digital ?? true) : true;
-                                        $canDownloadSlip = in_array(Auth::user()->role, ['admin', 'konsolidator']) || $isDownloadAllowed;
-                                    @endphp
+                                    <!-- Tombol Kirim ke Bank untuk Operator jika masih draft atau setelah revisi -->
+                                    @if(Auth::user()->role === 'operator' && in_array($trx->tahap_verifikasi, ['skpd_draft', 'revisi_bank', 'revisi_konsolidator']))
+                                    <form action="{{ route('transaksi.submit-bank', $trx->id) }}" method="POST" class="inline-block" onsubmit="return confirm('Kirimkan berkas rekonsiliasi kas ini ke pihak Bank Kalsel untuk diverifikasi?');">
+                                        @csrf
+                                        <button type="submit" class="inline-flex items-center justify-center h-8 px-2.5 rounded-lg bg-blue-600 text-white hover:bg-blue-700 text-xs font-bold transition-all shadow-xs gap-1" title="Kirim ke Bank Kalsel">
+                                            <span class="material-symbols-outlined text-[16px]">send</span>
+                                            Kirim Bank
+                                        </button>
+                                    </form>
+                                    @endif
 
-                                    <!-- Tombol Unduh Tanda Bukti Digital jika valid -->
-                                    @if($trx->status_konsolidator === 'valid' && $canDownloadSlip)
-                                    <a href="{{ route('transaksi.bukti-digital-pdf', $trx->id) }}" target="_blank" class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-600 hover:bg-emerald-600 hover:text-white transition-all" title="Unduh Surat Tanda Bukti Digital (PDF)">
+                                    <!-- Tombol Unduh Berita Acara (Resmi jika final, Draft jika belum) -->
+                                    <a href="{{ route('ba.pdf', $trx->id) }}" target="_blank" class="inline-flex items-center justify-center w-8 h-8 rounded-lg {{ $trx->tahap_verifikasi === 'disetujui_final' ? 'bg-emerald-600 text-white' : 'bg-surface-container text-on-surface hover:bg-primary hover:text-white' }} transition-all" title="{{ $trx->tahap_verifikasi === 'disetujui_final' ? 'Cetak Berita Acara Rekonsiliasi Resmi (PDF)' : 'Cetak Draft Berita Acara (Watermark Draft)' }}">
+                                        <span class="material-symbols-outlined text-[18px]">description</span>
+                                    </a>
+
+                                    <!-- Tombol Unduh Tanda Bukti Digital 4-Pilar -->
+                                    @if(in_array($trx->tahap_verifikasi, ['disetujui_final', 'menunggu_inspektorat']) || $trx->status_konsolidator === 'valid')
+                                    <a href="{{ route('transaksi.bukti-digital-pdf', $trx->id) }}" target="_blank" class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-indigo-500/10 text-indigo-600 hover:bg-indigo-600 hover:text-white transition-all" title="Unduh Lembar Bukti Verifikasi Digital (PDF)">
                                         <span class="material-symbols-outlined text-[18px]">verified</span>
                                     </a>
                                     @endif
 
-                                    <!-- Tombol Pemeriksaan Konsolidator & Admin -->
-                                    @if(in_array(Auth::user()->role, ['admin', 'konsolidator']))
-                                    <a href="{{ route('transaksi.pemeriksaan', $trx->id) }}" class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-primary/10 text-primary hover:bg-primary hover:text-on-primary transition-all" title="Pemeriksaan & Catatan Konsolidator">
-                                        <span class="material-symbols-outlined text-[18px]">fact_check</span>
-                                    </a>
-                                    @endif
-
                                     <!-- Tombol Reset ke Draft Khusus Admin -->
-                                    @if(Auth::user()->role === 'admin' && $trx->status_verifikasi === 'verified')
-                                    <form action="{{ route('transaksi.reset-draft', $trx->id) }}" method="POST" class="inline-block" onsubmit="return confirm('Kembalikan transaksi {{ $trx->skpd->nama ?? '' }} ke status DRAFT agar SKPD dapat memperbaikinya?');">
+                                    @if(Auth::user()->role === 'admin' && $trx->tahap_verifikasi !== 'skpd_draft')
+                                    <form action="{{ route('transaksi.reset-draft', $trx->id) }}" method="POST" class="inline-block" onsubmit="return confirm('Kembalikan transaksi {{ $trx->skpd->nama ?? '' }} ke status DRAFT?');">
                                         @csrf
                                         <button type="submit" class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-amber-500/10 text-amber-600 hover:bg-amber-500 hover:text-white transition-all" title="Kembalikan ke Draft">
                                             <span class="material-symbols-outlined text-[18px]">restart_alt</span>
@@ -165,7 +189,7 @@
 
                                     <!-- Tombol Edit & Hapus untuk Operator / Admin -->
                                     @if(Auth::user()->role !== 'konsolidator')
-                                        @if($trx->status_verifikasi !== 'verified' || Auth::user()->role === 'admin')
+                                        @if(in_array($trx->tahap_verifikasi, ['skpd_draft', 'revisi_bank', 'revisi_konsolidator']) || Auth::user()->role === 'admin')
                                         <a href="{{ route('transaksi.edit', $trx->id) }}" class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-primary hover:bg-primary/10 transition-colors" title="Edit Transaksi">
                                             <span class="material-symbols-outlined text-[18px]">edit</span>
                                         </a>
@@ -177,7 +201,7 @@
                                             </button>
                                         </form>
                                         @else
-                                        <span class="inline-flex items-center justify-center w-8 h-8 text-on-surface-variant/40" title="Terkunci (Sudah Diverifikasi)">
+                                        <span class="inline-flex items-center justify-center w-8 h-8 text-on-surface-variant/40" title="Terkunci (Sedang dalam proses verifikasi)">
                                             <span class="material-symbols-outlined text-[18px]">lock</span>
                                         </span>
                                         @endif

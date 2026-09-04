@@ -89,12 +89,12 @@
 </head>
 <body>
 
-    @if($transaksi->status_verifikasi === 'draft')
+    @if($transaksi->tahap_verifikasi !== 'disetujui_final')
         <div class="watermark">DRAFT</div>
     @endif
 
     @php
-        $lines = explode('|', $pengaturan->isi_kop ?? 'PEMERINTAH KABUPATEN TAPIN|BADAN KEUANGAN DAN ASET DAERAH|Jalan Datu Nuraya Kawasan Perkantoran Rantau Baru|RT. 01 Kelurahan Rangda Malingkung Kecamatan Tapin Utara Telp. 0517 2035173');
+        $lines = explode('|', $pengaturan->isi_kop ?? 'PEMERINTAH KOTA BANJARBARU|BADAN PENGELOLAAN KEUANGAN DAN ASET DAERAH|Jl. Panglima Batur No. 1 Kota Banjarbaru, Kalimantan Selatan 70711|Telp. (0511) 4772545');
         
         $logoSrc = \App\Models\Pengaturan::whereNull('skpd_id')->first()->logo ?? null;
         $base64Logo = null;
@@ -115,6 +115,11 @@
                     $base64Logo = 'data:image/' . $type . ';base64,' . base64_encode($data);
                 }
             } catch (\Exception $e) {}
+        }
+
+        if (!$base64Logo && file_exists(public_path('images/logo_banjarbaru.png'))) {
+            $data = file_get_contents(public_path('images/logo_banjarbaru.png'));
+            $base64Logo = 'data:image/png;base64,' . base64_encode($data);
         }
     @endphp
 
@@ -145,7 +150,12 @@
     <!-- Judul -->
     <div class="text-center judul-dokumen mb-4">
         <h2 class="uppercase">BERITA ACARA REKONSILIASI</h2>
-        <h3 class="uppercase">Bulan : {{ $namaBulan[$transaksi->periode_bulan - 1] }} {{ $transaksi->periode_tahun }}</h3>
+        @if($transaksi->nomor_ba)
+            <div style="font-size: 12px; font-weight: bold; margin-top: 3px;">Nomor : {{ $transaksi->nomor_ba }}</div>
+        @else
+            <div style="font-size: 10.5px; font-style: italic; color: #666; margin-top: 3px;">Nomor : DRAFT (Menunggu Pengesahan Inspektorat)</div>
+        @endif
+        <h3 class="uppercase" style="margin-top: 4px;">Bulan : {{ $namaBulan[$transaksi->periode_bulan - 1] }} {{ $transaksi->periode_tahun }}</h3>
     </div>
 
     <!-- Intro Text -->
@@ -156,8 +166,8 @@
         $bulanLengkap = $tglSumber->locale('id')->isoFormat('MMMM');
         $tahunLengkap = $tglSumber->format('Y');
         $akhirBulan = \Carbon\Carbon::createFromDate($transaksi->periode_tahun, $transaksi->periode_bulan, 1)->endOfMonth()->locale('id')->isoFormat('D MMMM YYYY');
-        $namaInstansi = $lines[1] ?? 'Badan Keuangan dan Aset Daerah';
-        $namaPemda = $lines[0] ?? 'Kabupaten Tapin';
+        $namaInstansi = $lines[1] ?? 'Badan Pengelolaan Keuangan dan Aset Daerah';
+        $namaPemda = $lines[0] ?? 'Kota Banjarbaru';
     @endphp
 
     @php
@@ -278,10 +288,10 @@
 
     <!-- Tanda Tangan -->
     @php
-        $kotaFallback = 'Rantau';
+        $kotaFallback = 'Banjarbaru';
         $lastLine = end($lines);
-        if(stripos($lastLine, 'Rantau') !== false) {
-            $kotaFallback = 'Rantau';
+        if(stripos($lastLine, 'Banjarbaru') !== false) {
+            $kotaFallback = 'Banjarbaru';
         }
     @endphp
 
@@ -317,35 +327,51 @@
         </tr>
     </table>
 
-    <!-- Footer Lampiran -->
+    <!-- Footer Lampiran & Stempel Verifikasi Berjenjang -->
     <table width="100%" style="margin-top: 10px; border: none; padding: 0;">
         <tr>
             <td style="vertical-align: bottom; border: none;">
-                <span class="font-bold italic">Lampiran :</span>
-                <ol class="italic" style="margin-top: 3px; padding-left: 20px; font-size: 12px; margin-bottom: 0;">
-                    <li>Buku Kas Pengeluaran</li>
+                <span class="font-bold italic">Lampiran Berkas:</span>
+                <ol class="italic" style="margin-top: 3px; padding-left: 20px; font-size: 11px; margin-bottom: 0;">
+                    <li>Buku Kas Pengeluaran (BKU)</li>
                     <li>Buku Pembantu Bank</li>
-                    <li>Rekening Koran Bank</li>
+                    <li>Rekening Koran Bank Kalsel</li>
                 </ol>
             </td>
             @if($transaksi->status_konsolidator === 'valid')
-            <td style="vertical-align: bottom; text-align: center; width: 175px; border: none; padding-right: 12px;">
-                <div style="border: 1.5px dashed #059669; background-color: #f0fdf4; border-radius: 6px; padding: 5px 8px; text-align: center;">
-                    <div style="font-size: 8.5px; font-weight: 900; color: #047857; text-transform: uppercase; letter-spacing: 0.5px;">
-                        TELAH DIPERIKSA &amp; SAH
+            <td style="vertical-align: bottom; text-align: center; width: 145px; border: none; padding-right: 6px;">
+                <div style="border: 1.5px dashed #059669; background-color: #f0fdf4; border-radius: 6px; padding: 4px 6px; text-align: center;">
+                    <div style="font-size: 8px; font-weight: 900; color: #047857; text-transform: uppercase;">
+                        TELAH DIUJI SAH
                     </div>
-                    <div style="font-size: 8px; font-weight: bold; color: #065f46; margin-top: 2px;">
-                        KONSOLIDATOR BKAD TAPIN
+                    <div style="font-size: 7.5px; font-weight: bold; color: #065f46; margin-top: 1px;">
+                        KONSOLIDATOR BPKAD
                     </div>
-                    <div style="font-size: 7.5px; color: #047857; font-family: monospace; margin-top: 3px; line-height: 1.2;">
-                        {{ $transaksi->checked_at ? \Carbon\Carbon::parse($transaksi->checked_at)->timezone('Asia/Makassar')->format('d/m/Y H:i') . ' WITA' : 'TERVERIFIKASI' }}<br>
-                        Oleh: {{ $transaksi->checker->name ?? 'Konsolidator' }}
+                    <div style="font-size: 7px; color: #047857; font-family: monospace; margin-top: 2px; line-height: 1.1;">
+                        {{ $transaksi->checked_at ? \Carbon\Carbon::parse($transaksi->checked_at)->timezone('Asia/Makassar')->format('d/m/y H:i') : 'VALID' }}<br>
+                        {{ Str::limit($transaksi->checker->name ?? 'BPKAD', 16) }}
                     </div>
                 </div>
             </td>
             @endif
-            @if($transaksi->status_verifikasi === 'verified')
-            <td style="vertical-align: bottom; text-align: center; width: 95px; border: none;">
+            @if($transaksi->inspektorat_status === 'valid')
+            <td style="vertical-align: bottom; text-align: center; width: 145px; border: none; padding-right: 6px;">
+                <div style="border: 1.5px dashed #4338ca; background-color: #eef2ff; border-radius: 6px; padding: 4px 6px; text-align: center;">
+                    <div style="font-size: 8px; font-weight: 900; color: #3730a3; text-transform: uppercase;">
+                        PENGESAHAN AKHIR
+                    </div>
+                    <div style="font-size: 7.5px; font-weight: bold; color: #312e81; margin-top: 1px;">
+                        INSPEKTORAT BANJARBARU
+                    </div>
+                    <div style="font-size: 7px; color: #3730a3; font-family: monospace; margin-top: 2px; line-height: 1.1;">
+                        {{ $transaksi->inspektorat_checked_at ? \Carbon\Carbon::parse($transaksi->inspektorat_checked_at)->timezone('Asia/Makassar')->format('d/m/y H:i') : 'TERCATAT' }}<br>
+                        {{ Str::limit($transaksi->inspektoratChecker->name ?? 'Inspektorat', 16) }}
+                    </div>
+                </div>
+            </td>
+            @endif
+            @if($transaksi->tahap_verifikasi === 'disetujui_final' || $transaksi->status_verifikasi === 'verified')
+            <td style="vertical-align: bottom; text-align: center; width: 85px; border: none;">
                 @php
                     $signedUrl = \Illuminate\Support\Facades\URL::signedRoute('verifikasi.show', $transaksi->id);
                     $qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=' . urlencode($signedUrl);
@@ -353,11 +379,11 @@
                     $qrBase64 = $qrData ? base64_encode($qrData) : '';
                 @endphp
                 @if($qrBase64)
-                    <img src="data:image/png;base64,{{ $qrBase64 }}" width="70" height="70" style="border: 1px solid #000; padding: 2px;">
+                    <img src="data:image/png;base64,{{ $qrBase64 }}" width="65" height="65" style="border: 1px solid #000; padding: 2px;">
                 @else
-                    <img src="data:image/svg+xml;base64,{!! base64_encode(\SimpleSoftwareIO\QrCode\Facades\QrCode::format('svg')->size(70)->generate($signedUrl)) !!}" width="70" height="70" style="border: 1px solid #000; padding: 2px;">
+                    <img src="data:image/svg+xml;base64,{!! base64_encode(\SimpleSoftwareIO\QrCode\Facades\QrCode::format('svg')->size(65)->generate($signedUrl)) !!}" width="65" height="65" style="border: 1px solid #000; padding: 2px;">
                 @endif
-                <div style="font-size: 8.5px; font-style: italic; font-weight: bold; margin-top: 2px;">Verifikasi Digital</div>
+                <div style="font-size: 8px; font-style: italic; font-weight: bold; margin-top: 2px;">Segel Digital</div>
             </td>
             @endif
         </tr>

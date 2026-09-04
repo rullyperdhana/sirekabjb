@@ -52,12 +52,12 @@ class BaController extends Controller
         }
 
         $pengaturan = $transaksi->skpd->pengaturan ?? \App\Models\Pengaturan::whereNull('skpd_id')->first() ?? new \App\Models\Pengaturan([
-            'nama_pemerintah' => 'PEMERINTAH KABUPATEN TAPIN',
+            'nama_pemerintah' => 'PEMERINTAH KOTA BANJARBARU',
             'nama_instansi' => $transaksi->skpd->nama,
-            'jalan' => 'Jalan Datu Nuraya Kawasan Perkantoran Rantau Baru',
-            'kecamatan' => 'RT. 01 Kelurahan Rangda Malingkung Kecamatan Tapin Utara Telp. 0517 2035173',
-            'kontak' => 'Kode Pos 71114 Email: bkad@tapinkab.go.id',
-            'kota' => 'RANTAU',
+            'jalan' => 'Jalan Panglima Batur No. 1',
+            'kecamatan' => 'Kelurahan Komet, Kecamatan Banjarbaru Utara',
+            'kontak' => 'Telp. (0511) 4782098 Email: bpkad@banjarbarukota.go.id',
+            'kota' => 'BANJARBARU',
         ]);
 
         return view('laporan.ba.index', compact('transaksi', 'pengaturan'));
@@ -71,12 +71,12 @@ class BaController extends Controller
         }
 
         $pengaturan = $transaksi->skpd->pengaturan ?? \App\Models\Pengaturan::whereNull('skpd_id')->first() ?? new \App\Models\Pengaturan([
-            'nama_pemerintah' => 'PEMERINTAH KABUPATEN TAPIN',
+            'nama_pemerintah' => 'PEMERINTAH KOTA BANJARBARU',
             'nama_instansi' => $transaksi->skpd->nama,
-            'jalan' => 'Jalan Datu Nuraya Kawasan Perkantoran Rantau Baru',
-            'kecamatan' => 'RT. 01 Kelurahan Rangda Malingkung Kecamatan Tapin Utara Telp. 0517 2035173',
-            'kontak' => 'Kode Pos 71114 Email: bkad@tapinkab.go.id',
-            'kota' => 'RANTAU',
+            'jalan' => 'Jalan Panglima Batur No. 1',
+            'kecamatan' => 'Kelurahan Komet, Kecamatan Banjarbaru Utara',
+            'kontak' => 'Telp. (0511) 4782098 Email: bpkad@banjarbarukota.go.id',
+            'kota' => 'BANJARBARU',
         ]);
 
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('laporan.ba.pdf', compact('transaksi', 'pengaturan'))

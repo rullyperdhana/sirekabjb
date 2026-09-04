@@ -249,7 +249,7 @@
             let usePeringatan = togglePeringatan.checked;
 
             let text = `📊 *REKAP REKONSILIASI KEUANGAN* 📊\n`;
-            text += `🏢 *BKAD KABUPATEN TAPIN*\n`;
+            text += `🏢 *BPKAD KOTA BANJARBARU*\n`;
             text += `🗓️ *Bulan : ${bulanText} ${tahunText}*\n`;
             text += `━━━━━━━━━━━━━━━━━━━━━\n\n`;
             

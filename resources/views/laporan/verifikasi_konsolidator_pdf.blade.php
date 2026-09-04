@@ -72,7 +72,7 @@
 <body>
 
     @php
-        $lines = explode('|', $pengaturan->isi_kop ?? 'PEMERINTAH KABUPATEN TAPIN|BADAN KEUANGAN DAN ASET DAERAH|Jalan Datu Nuraya Kawasan Perkantoran Rantau Baru|RT. 01 Kelurahan Rangda Malingkung Kecamatan Tapin Utara Telp. 0517 2035173');
+        $lines = explode('|', $pengaturan->isi_kop ?? 'PEMERINTAH KOTA BANJARBARU|BADAN PENGELOLAAN KEUANGAN DAN ASET DAERAH|Jl. Panglima Batur No. 1 Kota Banjarbaru, Kalimantan Selatan 70711|Telp. (0511) 4772545');
         $logoSrc = \App\Models\Pengaturan::whereNull('skpd_id')->first()->logo ?? null;
         $base64Logo = null;
         if ($logoSrc) {
@@ -83,6 +83,10 @@
                 $base64Logo = 'data:image/' . $type . ';base64,' . base64_encode($data);
             }
         }
+        if (!$base64Logo && file_exists(public_path('images/logo_banjarbaru.png'))) {
+            $data = file_get_contents(public_path('images/logo_banjarbaru.png'));
+            $base64Logo = 'data:image/png;base64,' . base64_encode($data);
+        }
     @endphp
 
     <!-- KOP Surat -->
@@ -91,8 +95,6 @@
             <td class="kop-logo">
                 @if($base64Logo)
                     <img src="{{ $base64Logo }}" alt="Logo">
-                @else
-                    <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAGQglX4a91lGBKJ3x84BjayBzB86CFjav3SqOK5oE63MWbYO2Qcazq0aldyUiq4O4QUHgyHX3dIYsy_YZxQrgNA3gnZu-9IDh5PBQyqlamviMO9EYFfXzj-ZmB1cLlx2nTyOGUzDWwaUmkCW2sxkgnhAFG2520U_AyWNIov7XjxkjfYKcEDsZudVlfdUva_l58gAIdKZlkfCSf_qyyKiJjlMlPtKy6VdEbjqUDxlo92seLSowz38NN" alt="Logo">
                 @endif
             </td>
             <td class="kop-text">
@@ -103,9 +105,9 @@
                         <p>{{ $lines[$i] }}</p>
                     @endfor
                 @else
-                    <h2>PEMERINTAH KABUPATEN TAPIN</h2>
-                    <h1>BADAN KEUANGAN DAN ASET DAERAH</h1>
-                    <p>Jalan Datu Nuraya Kawasan Perkantoran Rantau Baru</p>
+                    <h2>PEMERINTAH KOTA BANJARBARU</h2>
+                    <h1>BADAN PENGELOLAAN KEUANGAN DAN ASET DAERAH</h1>
+                    <p>Jl. Panglima Batur No. 1 Kota Banjarbaru, Kalimantan Selatan 70711</p>
                 @endif
             </td>
         </tr>
@@ -205,9 +207,9 @@
         <tr>
             <td style="width: 55%;"></td>
             <td class="ttd-cell">
-                Rantau, {{ \Carbon\Carbon::now()->locale('id')->isoFormat('D MMMM YYYY') }}<br>
+                Banjarbaru, {{ \Carbon\Carbon::now()->locale('id')->isoFormat('D MMMM YYYY') }}<br>
                 <strong>Mengetahui / Mengesahkan,</strong><br>
-                {{ $pengaturan->jabatan_kepala ?? 'Kepala Badan Keuangan dan Aset Daerah' }}
+                {{ $pengaturan->jabatan_kepala ?? 'Kepala Badan Pengelolaan Keuangan dan Aset Daerah' }}
                 <div class="ttd-space"></div>
                 <div class="ttd-name uppercase">{{ $pengaturan->nama_kepala ?? '.........................' }}</div>
                 <div>{{ $pengaturan->pangkat_kepala ?? '.........................' }}</div>

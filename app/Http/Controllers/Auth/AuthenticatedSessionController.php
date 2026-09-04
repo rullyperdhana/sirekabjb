@@ -30,6 +30,21 @@ class AuthenticatedSessionController extends Controller
     {
         $request->authenticate();
 
+        $user = Auth::user();
+        $pengaturan = \App\Models\Pengaturan::whereNull('skpd_id')->first();
+
+        // Jika Master Switch 2FA aktif dan akun user mengaktifkan 2FA, arahkan ke Two-Factor Challenge
+        if ($pengaturan && $pengaturan->is_2fa_active && $user && $user->hasTwoFactorEnabled()) {
+            Auth::guard('web')->logout();
+            $request->session()->put([
+                'login.2fa.user_id' => $user->id,
+                'login.2fa.remember' => $request->boolean('remember'),
+                'login.2fa.tahun_login' => $request->tahun_login,
+            ]);
+
+            return redirect()->route('two-factor.challenge');
+        }
+
         $request->session()->regenerate();
         
         $request->session()->put('tahun_login', $request->tahun_login);

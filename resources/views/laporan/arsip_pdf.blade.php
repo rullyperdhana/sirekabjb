@@ -64,7 +64,7 @@
 <body>
 
     @php
-        $lines = explode('|', $pengaturan->isi_kop ?? 'PEMERINTAH KABUPATEN TAPIN|BADAN KEUANGAN DAN ASET DAERAH|Jalan Datu Nuraya Kawasan Perkantoran Rantau Baru|RT. 01 Kelurahan Rangda Malingkung Kecamatan Tapin Utara Telp. 0517 2035173');
+        $lines = explode('|', $pengaturan->isi_kop ?? 'PEMERINTAH KOTA BANJARBARU|BADAN PENGELOLAAN KEUANGAN DAN ASET DAERAH|Jl. Panglima Batur No. 1 Kota Banjarbaru, Kalimantan Selatan 70711|Telp. (0511) 4772545');
         $logoSrc = $pengaturan->logo ?? null;
         $base64Logo = null;
         
@@ -78,7 +78,7 @@
         }
         
         if (!$base64Logo) {
-            $path = public_path('images/logo_tapin.png');
+            $path = public_path('images/logo_banjarbaru.png');
             if (file_exists($path)) {
                 $type = pathinfo($path, PATHINFO_EXTENSION);
                 $data = file_get_contents($path);
@@ -182,7 +182,7 @@
             <td class="ttd-cell">
             </td>
             <td class="ttd-cell">
-                Rantau, {{ \Carbon\Carbon::now()->isoFormat('D MMMM Y') }}<br>
+                Banjarbaru, {{ \Carbon\Carbon::now()->isoFormat('D MMMM Y') }}<br>
                 <strong>Admin SiReKa</strong><br>
                 <div class="ttd-space"></div>
                 <div class="ttd-name">{{ Auth::user()->name }}</div>

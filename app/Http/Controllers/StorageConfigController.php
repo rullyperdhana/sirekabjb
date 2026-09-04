@@ -40,7 +40,7 @@ class StorageConfigController extends Controller
                 'nas_mount_path' => '/mnt/sireka_nas_pool',
                 'minio_endpoint' => 'http://192.168.1.50:9000',
                 'minio_bucket' => 'sireka-arsip-rekon',
-                'minio_access_key' => 'admin_bkad_tapin',
+                'minio_access_key' => 'admin_bpkad_banjarbaru',
                 'minio_secret_key' => '',
                 'auto_archive' => true
             ];

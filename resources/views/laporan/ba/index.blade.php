@@ -35,10 +35,17 @@
     </div>
 
     <!-- Paper Container -->
-    <div class="max-w-[215mm] mx-auto bg-white p-[20mm] md:shadow-md md:my-8 min-h-[330mm]">
+    <div class="max-w-[215mm] mx-auto bg-white p-[20mm] md:shadow-md md:my-8 min-h-[330mm] relative overflow-hidden">
         
+        @if($transaksi->tahap_verifikasi !== 'disetujui_final')
+        <!-- Watermark Draft -->
+        <div class="absolute inset-0 flex items-center justify-center pointer-events-none select-none z-0 opacity-10 rotate-[-45deg]">
+            <span class="text-9xl font-black text-red-600 tracking-widest border-8 border-red-600 px-12 py-4 rounded-3xl">DRAFT</span>
+        </div>
+        @endif
+
         <!-- Document Content -->
-        <div class="max-w-3xl mx-auto">
+        <div class="max-w-3xl mx-auto relative z-10">
             
             <!-- KOP Surat (Formal Header) -->
             <div class="flex items-center gap-6 border-b-[3px] border-black pb-4 mb-8">
@@ -49,6 +56,8 @@
                             $logoUrl = asset('storage/' . $globalLogo);
                         } elseif ($globalLogo && filter_var($globalLogo, FILTER_VALIDATE_URL)) {
                             $logoUrl = $globalLogo;
+                        } elseif (file_exists(public_path('images/logo_banjarbaru.png'))) {
+                            $logoUrl = asset('images/logo_banjarbaru.png');
                         } else {
                             $logoUrl = null;
                         }
@@ -58,13 +67,13 @@
                     @else
                         <!-- No logo placeholder -->
                         <div class="w-full h-full flex items-center justify-center border border-dashed border-gray-300 rounded text-gray-400 text-xs text-center p-2">
-                            Belum ada Logo (Atur di Pengaturan Instansi)
+                            Pemerintah Kota Banjarbaru
                         </div>
                     @endif
                 </div>
                 <div class="flex-1 text-center text-black">
                     @php
-                        $lines = explode('|', $pengaturan->isi_kop ?? 'PEMERINTAH KABUPATEN TAPIN|BADAN KEUANGAN DAN ASET DAERAH|Jalan Datu Nuraya Kawasan Perkantoran Rantau Baru|RT. 01 Kelurahan Rangda Malingkung Kecamatan Tapin Utara Telp. 0517 2035173');
+                        $lines = explode('|', $pengaturan->isi_kop ?? 'PEMERINTAH KOTA BANJARBARU|BADAN PENGELOLAAN KEUANGAN DAN ASET DAERAH|Jl. Panglima Batur No. 1 Kota Banjarbaru, Kalimantan Selatan 70711|Telp. (0511) 4772545');
                     @endphp
                     @foreach($lines as $index => $line)
                         @if($index === 0)
@@ -83,6 +92,11 @@
             <!-- Document Title -->
             <div class="text-center mb-8">
                 <h2 class="text-xl font-bold uppercase underline underline-offset-4 decoration-2 text-black">BERITA ACARA REKONSILIASI</h2>
+                @if($transaksi->nomor_ba)
+                    <div class="text-sm font-bold text-black mt-1">Nomor : {{ $transaksi->nomor_ba }}</div>
+                @else
+                    <div class="text-xs italic text-gray-500 mt-1">Nomor : DRAFT (Menunggu Pengesahan Akhir Inspektorat)</div>
+                @endif
                 <h3 class="text-lg font-bold mt-2 text-black">Bulan : {{ strtoupper($namaBulan[$transaksi->periode_bulan - 1]) }} {{ $transaksi->periode_tahun }}</h3>
             </div>
             
@@ -98,8 +112,8 @@
                     
                     $akhirBulan = \Carbon\Carbon::createFromDate($transaksi->periode_tahun, $transaksi->periode_bulan, 1)->endOfMonth()->locale('id')->isoFormat('D MMMM YYYY');
                     
-                    $namaInstansi = $lines[1] ?? 'Badan Keuangan dan Aset Daerah';
-                    $namaPemda = $lines[0] ?? 'Kabupaten Tapin';
+                    $namaInstansi = $lines[1] ?? 'Badan Pengelolaan Keuangan dan Aset Daerah';
+                    $namaPemda = $lines[0] ?? 'Kota Banjarbaru';
                     
                     // Ambil template pengantar (Prioritas: Snapshot -> Pengaturan Global -> Default)
                     $templatePengantar = $transaksi->snapshot_pengantar_ba 
@@ -240,10 +254,10 @@
                 <div class="col-span-2 text-center mt-12">
                     @php
                         // Coba cari kota dari isi_kop
-                        $kotaFallback = 'Rantau';
+                        $kotaFallback = 'Banjarbaru';
                         $lastLine = end($lines);
-                        if(stripos($lastLine, 'Rantau') !== false) {
-                            $kotaFallback = 'Rantau';
+                        if(stripos($lastLine, 'Banjarbaru') !== false) {
+                            $kotaFallback = 'Banjarbaru';
                         }
                     @endphp
                     <p class="mb-1">{{ $kotaFallback }}, {{ $tglSumber->locale('id')->isoFormat('D MMMM YYYY') }}</p>
@@ -254,37 +268,60 @@
                 </div>
             </div>
             
-            <div class="flex justify-between items-end text-black text-sm">
+            <div class="flex flex-wrap justify-between items-end text-black text-sm gap-4 pt-4 border-t border-gray-200">
                 <!-- Lampiran List -->
                 <div>
-                    <p class="font-bold italic mb-1">Lampiran :</p>
-                    <ol class="list-decimal list-inside italic">
-                        <li>Buku Kas Pengeluaran</li>
+                    <p class="font-bold italic mb-1">Lampiran Berkas:</p>
+                    <ol class="list-decimal list-inside italic text-xs space-y-0.5">
+                        <li>Buku Kas Pengeluaran (BKU)</li>
                         <li>Buku Pembantu Bank</li>
-                        <li>Rekening Koran Bank</li>
+                        <li>Rekening Koran Bank Kalsel</li>
                     </ol>
                 </div>
-                @if($transaksi->status_verifikasi === 'verified')
-                <div class="flex flex-col items-center justify-center">
-                    <div class="p-1 border border-black inline-block bg-white">
-                        @php
-                            // Gunakan API eksternal untuk mendapatkan PNG murni agar 100% kompatibel dengan DomPDF tanpa butuh ekstensi Imagick
-                            $signedUrl = \Illuminate\Support\Facades\URL::signedRoute('verifikasi.show', $transaksi->id);
-                            $qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=' . urlencode($signedUrl);
-                            $qrData = @file_get_contents($qrUrl);
-                            $qrBase64 = $qrData ? base64_encode($qrData) : '';
-                        @endphp
-                        @if($qrBase64)
-                            <img src="data:image/png;base64,{{ $qrBase64 }}" width="80" height="80">
-                        @else
-                            <img src="data:image/svg+xml;base64,{!! base64_encode(\SimpleSoftwareIO\QrCode\Facades\QrCode::format('svg')->size(80)->generate($signedUrl)) !!}" width="80" height="80">
-                        @endif
+
+                <!-- Verification Badges -->
+                <div class="flex items-center gap-3">
+                    @if($transaksi->status_konsolidator === 'valid')
+                    <div class="border border-emerald-600 border-dashed bg-emerald-50 rounded-lg p-2 text-center text-xs">
+                        <div class="font-bold text-emerald-800 text-[10px]">TELAH DIUJI SAH</div>
+                        <div class="font-bold text-emerald-700 text-[9px]">KONSOLIDATOR BPKAD</div>
+                        <div class="text-[8px] text-emerald-600 font-mono mt-0.5">
+                            {{ $transaksi->checked_at ? \Carbon\Carbon::parse($transaksi->checked_at)->timezone('Asia/Makassar')->format('d/m/y H:i') : 'VALID' }}
+                        </div>
                     </div>
-                    <span class="text-[10px] mt-1 italic font-bold">Dokumen Terverifikasi</span>
+                    @endif
+
+                    @if($transaksi->inspektorat_status === 'valid')
+                    <div class="border border-indigo-600 border-dashed bg-indigo-50 rounded-lg p-2 text-center text-xs">
+                        <div class="font-bold text-indigo-800 text-[10px]">PENGESAHAN AKHIR</div>
+                        <div class="font-bold text-indigo-700 text-[9px]">INSPEKTORAT BANJARBARU</div>
+                        <div class="text-[8px] text-indigo-600 font-mono mt-0.5">
+                            {{ $transaksi->inspektorat_checked_at ? \Carbon\Carbon::parse($transaksi->inspektorat_checked_at)->timezone('Asia/Makassar')->format('d/m/y H:i') : 'TERCATAT' }}
+                        </div>
+                    </div>
+                    @endif
+
+                    @if($transaksi->tahap_verifikasi === 'disetujui_final' || $transaksi->status_verifikasi === 'verified')
+                    <div class="flex flex-col items-center justify-center">
+                        <div class="p-1 border border-black inline-block bg-white shadow-sm">
+                            @php
+                                $signedUrl = \Illuminate\Support\Facades\URL::signedRoute('verifikasi.show', $transaksi->id);
+                                $qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=' . urlencode($signedUrl);
+                                $qrData = @file_get_contents($qrUrl);
+                                $qrBase64 = $qrData ? base64_encode($qrData) : '';
+                            @endphp
+                            @if($qrBase64)
+                                <img src="data:image/png;base64,{{ $qrBase64 }}" width="70" height="70">
+                            @else
+                                <img src="data:image/svg+xml;base64,{!! base64_encode(\SimpleSoftwareIO\QrCode\Facades\QrCode::format('svg')->size(70)->generate($signedUrl)) !!}" width="70" height="70">
+                            @endif
+                        </div>
+                        <span class="text-[9px] mt-1 italic font-bold">Segel Digital SiReKa</span>
+                    </div>
+                    @endif
                 </div>
-                @endif
             </div>
-        </article>
+        </div>
     </div>
 
     <style>

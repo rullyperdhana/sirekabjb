@@ -16,8 +16,35 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): View
     {
+        $user = $request->user();
+        $pengaturan = \App\Models\Pengaturan::whereNull('skpd_id')->first();
+        $google2fa = new \PragmaRX\Google2FA\Google2FA();
+
+        $secret2fa = null;
+        $qrCodeSvg = null;
+        $recoveryCodes = [];
+
+        if (!$user->hasTwoFactorEnabled()) {
+            $secret2fa = $user->getDecryptedTwoFactorSecret();
+            if (!$secret2fa) {
+                $secret2fa = $google2fa->generateSecretKey();
+                $user->setTwoFactorSecret($secret2fa);
+            }
+
+            $company = 'SiReKa Kota Banjarbaru';
+            $holder = $user->username . ' (' . ($user->email ?: 'banjarbaru') . ')';
+            $qrUrl = $google2fa->getQRCodeUrl($company, $holder, $secret2fa);
+            $qrCodeSvg = \SimpleSoftwareIO\QrCode\Facades\QrCode::size(180)->margin(1)->generate($qrUrl);
+        } else {
+            $recoveryCodes = $user->getRecoveryCodesArray();
+        }
+
         return view('profile.edit', [
-            'user' => $request->user(),
+            'user' => $user,
+            'pengaturan' => $pengaturan,
+            'secret2fa' => $secret2fa,
+            'qrCodeSvg' => $qrCodeSvg,
+            'recoveryCodes' => $recoveryCodes,
         ]);
     }
 

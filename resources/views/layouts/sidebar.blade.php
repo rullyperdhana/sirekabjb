@@ -14,12 +14,12 @@
             </div>
         @endif
         <div>
-            <h1 class="text-headline-md font-headline-md font-bold text-on-primary dark:text-primary-fixed">BKAD</h1>
-            <p class="text-label-sm font-label-sm text-on-primary/80">Kabupaten Tapin</p>
+            <h1 class="text-headline-md font-headline-md font-bold text-on-primary dark:text-primary-fixed">BPKAD</h1>
+            <p class="text-label-sm font-label-sm text-on-primary/80">Kota Banjarbaru</p>
         </div>
     </div>
     
-    @if(auth()->user()->role !== 'konsolidator')
+    @if(in_array(auth()->user()->role, ['admin', 'operator']))
     <div class="px-4 mb-6">
         <a href="{{ route('transaksi.create') }}" class="w-full bg-secondary-container text-on-secondary-container hover:bg-secondary-container/90 py-3 rounded-lg text-label-sm font-label-sm flex items-center justify-center gap-2 shadow-sm transition-transform scale-95 active:scale-90">
             <span class="material-symbols-outlined" data-weight="fill">add_circle</span>
@@ -87,8 +87,33 @@
             </a>
         </li>
 
+        <!-- Pilar 2: Antrean Verifikasi Bank -->
+        @if(in_array(auth()->user()->role, ['admin', 'bank']))
+        @php
+            $pendingBankCount = \App\Models\Transaksi::where('periode_tahun', session('tahun_login') ?? date('Y'))
+                ->where('tahap_verifikasi', 'menunggu_bank')
+                ->count();
+        @endphp
+        <li>
+            <a class="group relative rounded-xl flex items-center justify-between px-4 py-3 transition-all duration-300 {{ request()->routeIs('verifikasi.bank.*') ? 'bg-secondary-container text-on-secondary-container' : 'text-on-primary/80 hover:text-on-primary hover:bg-primary-container/50' }}" href="{{ route('verifikasi.bank.index') }}">
+                <div class="flex items-center gap-3">
+                    @if(request()->routeIs('verifikasi.bank.*'))
+                        <div class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-on-secondary-container rounded-r-full"></div>
+                    @endif
+                    <span class="material-symbols-outlined group-hover:scale-110 transition-transform duration-300" data-weight="{{ request()->routeIs('verifikasi.bank.*') ? 'fill' : '300' }}">account_balance</span>
+                    <span class="text-label-sm font-label-sm group-hover:translate-x-1 transition-transform duration-300">Verifikasi Bank</span>
+                </div>
+                @if($pendingBankCount > 0)
+                    <span class="px-2 py-0.5 text-[10px] font-bold rounded-full bg-blue-400 text-slate-900 shadow-sm animate-pulse">
+                        {{ $pendingBankCount }}
+                    </span>
+                @endif
+            </a>
+        </li>
+        @endif
+
+        <!-- Pilar 3: Antrean Verifikasi Konsolidator Kasda -->
         @if(in_array(auth()->user()->role, ['admin', 'konsolidator']))
-        <!-- Antrean Verifikasi -->
         @php
             $pendingVerifikasiCount = \App\Models\Transaksi::where('periode_tahun', session('tahun_login') ?? date('Y'))
                 ->where('status_verifikasi', 'verified')
@@ -102,11 +127,36 @@
                         <div class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-on-secondary-container rounded-r-full"></div>
                     @endif
                     <span class="material-symbols-outlined group-hover:scale-110 transition-transform duration-300" data-weight="{{ request()->routeIs('transaksi.antrean') ? 'fill' : '300' }}">fact_check</span>
-                    <span class="text-label-sm font-label-sm group-hover:translate-x-1 transition-transform duration-300">Antrean Verifikasi</span>
+                    <span class="text-label-sm font-label-sm group-hover:translate-x-1 transition-transform duration-300">Verifikasi Kasda</span>
                 </div>
                 @if($pendingVerifikasiCount > 0)
-                    <span class="px-2 py-0.5 text-[10px] font-bold rounded-full bg-amber-400 text-slate-900 shadow-sm animate-pulse">
+                    <span class="px-2 py-0.5 text-[10px] font-bold rounded-full bg-purple-400 text-slate-900 shadow-sm animate-pulse">
                         {{ $pendingVerifikasiCount }}
+                    </span>
+                @endif
+            </a>
+        </li>
+        @endif
+
+        <!-- Pilar 4: Pengesahan & Penerbitan BA Inspektorat -->
+        @if(in_array(auth()->user()->role, ['admin', 'inspektorat']))
+        @php
+            $pendingInspektoratCount = \App\Models\Transaksi::where('periode_tahun', session('tahun_login') ?? date('Y'))
+                ->where('tahap_verifikasi', 'menunggu_inspektorat')
+                ->count();
+        @endphp
+        <li>
+            <a class="group relative rounded-xl flex items-center justify-between px-4 py-3 transition-all duration-300 {{ request()->routeIs('verifikasi.inspektorat.*') ? 'bg-secondary-container text-on-secondary-container' : 'text-on-primary/80 hover:text-on-primary hover:bg-primary-container/50' }}" href="{{ route('verifikasi.inspektorat.index') }}">
+                <div class="flex items-center gap-3">
+                    @if(request()->routeIs('verifikasi.inspektorat.*'))
+                        <div class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-on-secondary-container rounded-r-full"></div>
+                    @endif
+                    <span class="material-symbols-outlined group-hover:scale-110 transition-transform duration-300" data-weight="{{ request()->routeIs('verifikasi.inspektorat.*') ? 'fill' : '300' }}">verified</span>
+                    <span class="text-label-sm font-label-sm group-hover:translate-x-1 transition-transform duration-300">Pengesahan Inspektorat</span>
+                </div>
+                @if($pendingInspektoratCount > 0)
+                    <span class="px-2 py-0.5 text-[10px] font-bold rounded-full bg-amber-400 text-slate-900 shadow-sm animate-pulse">
+                        {{ $pendingInspektoratCount }}
                     </span>
                 @endif
             </a>
@@ -179,7 +229,7 @@
 
         <!-- Pengaturan -->
         <li class="group/menu">
-            @php $isPengaturan = request()->routeIs('user.*', 'pengaturan.*', 'password.*', 'log.*', 'pengumuman.*'); @endphp
+            @php $isPengaturan = request()->routeIs('user.*', 'pengaturan.*', 'password.*', 'log.*', 'pengumuman.*', 'profile.*'); @endphp
             <button class="w-full relative rounded-xl flex items-center justify-between px-4 py-3 transition-all duration-300 {{ $isPengaturan ? 'bg-primary-container/30 text-on-primary' : 'text-on-primary/80 hover:text-on-primary hover:bg-primary-container/50' }}" onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('.arrow').classList.toggle('rotate-180')">
                 <div class="flex items-center gap-3">
                     <span class="material-symbols-outlined group-hover/menu:scale-110 transition-transform duration-300" data-weight="{{ $isPengaturan ? 'fill' : '300' }}">settings</span>
@@ -218,6 +268,12 @@
                     <a class="relative text-on-primary/70 hover:text-on-primary rounded-lg flex items-center gap-3 px-4 py-2 ml-8 transition-all duration-300 group-hover:translate-x-1" href="{{ route('password.edit') }}">
                         <div class="absolute left-[-1.15rem] top-1/2 -translate-y-1/2 w-3 h-[1px] bg-on-primary/20"></div>
                         <span class="text-label-sm font-label-sm group-hover:translate-x-1 transition-transform duration-300">Ubah Password</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="relative text-on-primary/70 hover:text-on-primary rounded-lg flex items-center gap-3 px-4 py-2 ml-8 transition-all duration-300 group-hover:translate-x-1 {{ request()->routeIs('profile.two-factor') ? 'text-white font-semibold' : '' }}" href="{{ route('profile.two-factor') }}">
+                        <div class="absolute left-[-1.15rem] top-1/2 -translate-y-1/2 w-3 h-[1px] bg-on-primary/20"></div>
+                        <span class="text-label-sm font-label-sm group-hover:translate-x-1 transition-transform duration-300">Keamanan 2FA</span>
                     </a>
                 </li>
                 @if(auth()->user()->role === 'admin')

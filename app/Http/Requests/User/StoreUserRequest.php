@@ -26,7 +26,7 @@ class StoreUserRequest extends FormRequest
             'username' => 'required|string|max:255|unique:users',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => ['required', \Illuminate\Validation\Rules\Password::defaults(), 'confirmed'],
-            'role' => 'required|in:admin,konsolidator,operator',
+            'role' => 'required|in:admin,bank,konsolidator,inspektorat,operator',
             'skpd_id' => 'nullable|exists:skpds,id',
             'status' => 'boolean',
         ];

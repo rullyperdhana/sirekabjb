@@ -79,7 +79,7 @@
 <body>
 
     @php
-        $lines = explode('|', $pengaturan->isi_kop ?? 'PEMERINTAH KABUPATEN TAPIN|BADAN KEUANGAN DAN ASET DAERAH|Jalan Datu Nuraya Kawasan Perkantoran Rantau Baru|RT. 01 Kelurahan Rangda Malingkung Kecamatan Tapin Utara Telp. 0517 2035173');
+        $lines = explode('|', $pengaturan->isi_kop ?? 'PEMERINTAH KOTA BANJARBARU|BADAN PENGELOLAAN KEUANGAN DAN ASET DAERAH|Jl. Panglima Batur No. 1 Kota Banjarbaru, Kalimantan Selatan 70711|Telp. (0511) 4772545');
         $logoSrc = \App\Models\Pengaturan::whereNull('skpd_id')->first()->logo ?? null;
         $base64Logo = null;
         
@@ -93,7 +93,7 @@
         }
         
         if (!$base64Logo) {
-            $path = public_path('images/logo_tapin.png');
+            $path = public_path('images/logo_banjarbaru.png');
             if (file_exists($path)) {
                 $type = pathinfo($path, PATHINFO_EXTENSION);
                 $data = file_get_contents($path);
@@ -203,15 +203,15 @@
         </tbody>
     </table>
 
-    <!-- Bagian II: Daftar Pengguna Non-SKPD (Pusat) -->
-    <div class="section-title" style="margin-top: 10px;">II. DAFTAR PENGGUNA NON-SKPD (ADMIN & KONSOLIDATOR BKAD PUSAT)</div>
+    <!-- Bagian II: Daftar Pengguna Non-SKPD (Pusat / 4-Pilar) -->
+    <div class="section-title" style="margin-top: 10px;">II. DAFTAR PENGGUNA TINGKAT PUSAT / 4-PILAR (ADMIN, BANK KALSEL, KONSOLIDATOR BPKAD & INSPEKTORAT)</div>
     <table class="data">
         <thead>
             <tr>
                 <th style="width: 5%;">No</th>
-                <th style="width: 35%;">Nama Lengkap</th>
-                <th style="width: 25%;">Username</th>
-                <th style="width: 20%;">Peran (Role)</th>
+                <th style="width: 30%;">Nama Lengkap</th>
+                <th style="width: 20%;">Username</th>
+                <th style="width: 30%;">Peran & Otoritas (Probis)</th>
                 <th style="width: 15%;">Status Akun</th>
             </tr>
         </thead>
@@ -221,7 +221,17 @@
                 <td class="text-center">{{ $idx + 1 }}</td>
                 <td style="font-weight: bold;">{{ $usr->name }}</td>
                 <td style="font-family: monospace; color: #2563eb;">{{ $usr->username }}</td>
-                <td class="text-center">{{ strtoupper($usr->role ?? 'admin') }}</td>
+                <td class="text-center" style="font-size: 9.5px; font-weight: bold;">
+                    @if($usr->role === 'bank')
+                        <span style="color: #b45309;">Pilar 2: Bank Kalsel</span>
+                    @elseif($usr->role === 'konsolidator')
+                        <span style="color: #6b21a8;">Pilar 3: Konsolidator BPKAD</span>
+                    @elseif($usr->role === 'inspektorat')
+                        <span style="color: #9f1239;">Pilar 4: Inspektorat</span>
+                    @else
+                        <span style="color: #0f172a;">Administrator BPKAD</span>
+                    @endif
+                </td>
                 <td class="text-center font-bold {{ $usr->status ? 'text-ok' : 'text-alert' }}">
                     {{ $usr->status ? 'Aktif' : 'Non-Aktif' }}
                 </td>
@@ -240,7 +250,7 @@
             <tr>
                 <td style="width: 65%; border: none;"></td>
                 <td style="width: 35%; text-align: center; border: none;">
-                    Rantau, {{ \Carbon\Carbon::now()->format('d-m-Y') }}<br>
+                    Banjarbaru, {{ \Carbon\Carbon::now()->format('d-m-Y') }}<br>
                     <strong>Administrator Sistem SiReKa</strong><br><br><br><br>
                     <span style="text-decoration: underline; font-weight: bold;">{{ auth()->user()->name }}</span><br>
                     <span>NIP / Username: {{ auth()->user()->username }}</span>

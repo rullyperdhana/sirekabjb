@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Pengaturan;
 use Illuminate\Database\Seeder;
 
 class PengaturanSeeder extends Seeder
@@ -12,17 +12,30 @@ class PengaturanSeeder extends Seeder
      */
     public function run(): void
     {
-        \App\Models\Pengaturan::create([
-            'nama_pemerintah' => 'PEMERINTAH KABUPATEN TAPIN',
-            'nama_instansi' => 'BADAN KEUANGAN DAN ASET DAERAH',
-            'jalan' => 'Jalan Datu Nuraya Kawasan Perkantoran Rantau Baru',
-            'kecamatan' => 'RT. 01 Kelurahan Rangda Malingkung Kecamatan Tapin Utara Telp. 0517 2035173',
-            'kontak' => 'Kode Pos 71114 Email: bkad@tapinkab.go.id',
-            'kota' => 'RANTAU',
-            'logo' => 'https://lh3.googleusercontent.com/aida-public/AB6AXuAGQglX4a91lGBKJ3x84BjayBzB86CFjav3SqOK5oE63MWbYO2Qcazq0aldyUiq4O4QUHgyHX3dIYsy_YZxQrgNA3gnZu-9IDh5PBQyqlamviMO9EYFfXzj-ZmB1cLlx2nTyOGUzDWwaUmkCW2sxkgnhAFG2520U_AyWNIov7XjxkjfYKcEDsZudVlfdUva_l58gAIdKZlkfCSf_qyyKiJjlMlPtKy6VdEbjqUDxlo92seLSowz38NN',
-            'jabatan_penandatangan' => 'Pengguna Anggaran / Kuasa Pengguna Anggaran',
-            'nama_penandatangan' => 'DR. H. ZAINAL AQLI, S.T. M.T',
-            'nip_penandatangan' => '19690214 199403 1 011',
-        ]);
+        Pengaturan::updateOrCreate(
+            ['skpd_id' => null],
+            [
+                'isi_kop' => 'PEMERINTAH KOTA BANJARBARU|BADAN PENGELOLAAN KEUANGAN DAN ASET DAERAH|Jalan Panglima Batur No. 1 Kota Banjarbaru, Kalimantan Selatan|Telp. (0511) 4782098 Email: bpkad@banjarbarukota.go.id',
+                'logo' => 'images/logo_banjarbaru.png',
+                'nama_kepala' => 'Drs. H. JAINUDIN, M.Si',
+                'nip_kepala' => '19680512 199303 1 005',
+                'pangkat_kepala' => 'Pembina Utama Muda (IV/c)',
+                'jabatan_kepala' => 'Kepala BPKAD Kota Banjarbaru',
+                'nama_bendahara' => 'BENDAHARA UMUM DAERAH',
+                'nip_bendahara' => '19820415 200604 1 008',
+                'pangkat_bendahara' => 'Penata Tk. I (III/d)',
+                'jabatan_bendahara' => 'Kuasa BUD Kota Banjarbaru',
+                'nama_kasubag' => 'KASUBAG KEUANGAN',
+                'nip_kasubag' => '19850920 200902 2 003',
+                'pangkat_kasubag' => 'Penata (III/c)',
+                'jabatan_kasubag' => 'Kasubag Keuangan & Aset',
+                'is_registration_open' => true,
+                'allow_operator_reupload' => true,
+                'is_livelog_active' => true,
+                'allow_edit_saldo_awal' => true,
+                'allow_skpd_download_bukti_digital' => true,
+                'format_nomor_ba' => '900/{NOMOR}/BA-REKON/{KODE_SKPD}/{BULAN_ROMAWI}/{TAHUN}',
+            ]
+        );
     }
 }

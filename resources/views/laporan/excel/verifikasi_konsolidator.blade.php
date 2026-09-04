@@ -3,7 +3,7 @@
         <td colspan="10" style="font-weight: bold; font-size: 14px; text-align: center;">REGISTER HASIL PEMERIKSAAN & VERIFIKASI KONSOLIDATOR KAS DAERAH</td>
     </tr>
     <tr>
-        <td colspan="10" style="font-weight: bold; text-align: center;">BADAN KEUANGAN DAN ASET DAERAH (BKAD) KABUPATEN TAPIN</td>
+        <td colspan="10" style="font-weight: bold; text-align: center;">BADAN PENGELOLAAN KEUANGAN DAN ASET DAERAH (BPKAD) KOTA BANJARBARU</td>
     </tr>
     <tr>
         <td colspan="10" style="text-align: center;">

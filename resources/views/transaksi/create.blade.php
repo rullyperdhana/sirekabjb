@@ -29,8 +29,8 @@
             <div class="bg-surface-container-lowest border border-outline-variant rounded shadow-sm p-10 relative">
                 <!-- Formal Header Pattern -->
                 <div class="border-b-[3px] border-primary pb-6 mb-8 text-center flex flex-col items-center justify-center">
-                    <h3 class="text-headline-sm font-headline-sm font-bold uppercase tracking-wide">Pemerintah Kabupaten Tapin</h3>
-                    <h2 class="text-headline-lg font-headline-lg font-bold uppercase tracking-tight text-primary">Badan Keuangan dan Aset Daerah</h2>
+                    <h3 class="text-headline-sm font-headline-sm font-bold uppercase tracking-wide">Pemerintah Kota Banjarbaru</h3>
+                    <h2 class="text-headline-lg font-headline-lg font-bold uppercase tracking-tight text-primary">Badan Pengelolaan Keuangan dan Aset Daerah</h2>
                 </div>
                 
                 <!-- General Info -->

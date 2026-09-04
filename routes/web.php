@@ -26,11 +26,18 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     
+    // Two-Factor Authentication Profile Routes
+    Route::get('/profile/two-factor', [\App\Http\Controllers\Auth\TwoFactorController::class, 'show'])->name('profile.two-factor');
+    Route::post('/profile/two-factor/confirm', [\App\Http\Controllers\Auth\TwoFactorController::class, 'confirm'])->name('profile.two-factor.confirm');
+    Route::delete('/profile/two-factor/disable', [\App\Http\Controllers\Auth\TwoFactorController::class, 'disable'])->name('profile.two-factor.disable');
+    Route::post('/profile/two-factor/recovery-codes', [\App\Http\Controllers\Auth\TwoFactorController::class, 'regenerateRecoveryCodes'])->name('profile.two-factor.recovery-codes');
+
     // Master Data (Admin Only)
     Route::middleware([\App\Http\Middleware\IsAdmin::class])->group(function () {
         Route::resource('master/skpd', SkpdController::class);
         Route::resource('master/tahun', \App\Http\Controllers\TahunAnggaranController::class)->except(['create', 'show', 'edit']);
         Route::get('pengaturan/user/cetak-laporan', [UserController::class, 'cetakLaporan'])->name('user.cetak_laporan');
+        Route::post('pengaturan/user/{user}/reset-2fa', [\App\Http\Controllers\Auth\TwoFactorController::class, 'adminReset'])->name('user.reset-2fa');
         Route::resource('pengaturan/user', UserController::class);
         Route::resource('pengaturan/pengumuman', \App\Http\Controllers\PengumumanController::class);
         Route::get('pengaturan/log', [\App\Http\Controllers\LogController::class, 'index'])->name('log.index');
@@ -73,7 +80,22 @@ Route::middleware('auth')->group(function () {
         Route::get('/dokumen/tree/{transaksi}/zip', [\App\Http\Controllers\DokumenController::class, 'downloadZip'])->name('dokumen.zip');
         Route::post('/dokumen/bulk-zip', [\App\Http\Controllers\DokumenController::class, 'bulkDownloadZip'])->name('dokumen.bulk_zip');
     });
-    
+
+    // Pilar 1 -> Pilar 2: Pengajuan SKPD ke Bank
+    Route::post('/transaksi/{transaksi}/submit-bank', [\App\Http\Controllers\TransaksiController::class, 'submitToBank'])->name('transaksi.submit-bank');
+
+    // Pilar 2: Verifikasi Rekening Koran (Pihak Bank & Admin)
+    Route::get('/verifikasi/bank', [\App\Http\Controllers\VerifikasiBankController::class, 'index'])->name('verifikasi.bank.index');
+    Route::get('/verifikasi/bank/{transaksi}', [\App\Http\Controllers\VerifikasiBankController::class, 'review'])->name('verifikasi.bank.review');
+    Route::post('/verifikasi/bank/{transaksi}/approve', [\App\Http\Controllers\VerifikasiBankController::class, 'approve'])->name('verifikasi.bank.approve');
+    Route::post('/verifikasi/bank/{transaksi}/revisi', [\App\Http\Controllers\VerifikasiBankController::class, 'revisi'])->name('verifikasi.bank.revisi');
+
+    // Pilar 4: Pengawasan & Pengesahan BA (Inspektorat & Admin)
+    Route::get('/verifikasi/inspektorat', [\App\Http\Controllers\VerifikasiInspektoratController::class, 'index'])->name('verifikasi.inspektorat.index');
+    Route::get('/verifikasi/inspektorat/{transaksi}', [\App\Http\Controllers\VerifikasiInspektoratController::class, 'review'])->name('verifikasi.inspektorat.review');
+    Route::post('/verifikasi/inspektorat/{transaksi}/approve', [\App\Http\Controllers\VerifikasiInspektoratController::class, 'approve'])->name('verifikasi.inspektorat.approve');
+    Route::post('/verifikasi/inspektorat/{transaksi}/revisi', [\App\Http\Controllers\VerifikasiInspektoratController::class, 'revisi'])->name('verifikasi.inspektorat.revisi');
+
     // Master Data (All Users)
     Route::resource('master/rekening', RekeningController::class);
     

@@ -32,9 +32,23 @@
                     <p class="text-[11px] font-bold text-primary mt-2 uppercase">{{ Auth::user()->role === 'operator' ? 'Operator: ' . (Auth::user()->skpd->nama ?? 'SKPD') : Auth::user()->role }}</p>
                 </div>
                 <hr>
+                <div class="py-1">
+                    <a href="{{ route('profile.edit') }}" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                        <span class="material-symbols-outlined text-[18px]">person</span>
+                        <span>Profil Saya</span>
+                    </a>
+                    <a href="{{ route('profile.two-factor') }}" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                        <span class="material-symbols-outlined text-[18px]">security</span>
+                        <span>Keamanan 2FA</span>
+                    </a>
+                </div>
+                <hr>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
-                    <button type="submit" class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100">Log Out</button>
+                    <button type="submit" class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-[18px]">logout</span>
+                        <span>Log Out</span>
+                    </button>
                 </form>
             </div>
         </div>

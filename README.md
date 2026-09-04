@@ -1,6 +1,6 @@
-# SiReKa (Sistem Rekonsiliasi Kas Daerah - Kabupaten Tapin)
+# SiReKa (Sistem Rekonsiliasi Kas Daerah - Pemerintah Kota Banjarbaru)
 
-**SiReKa (Sistem Rekonsiliasi Kas)** adalah platform digital terpadu untuk pengelolaan, validasi, dan rekonsiliasi kas Bendahara Pengeluaran tingkat Satuan Kerja Perangkat Daerah (SKPD) di lingkungan Pemerintah Kabupaten Tapin (Badan Keuangan dan Aset Daerah - BKAD). Aplikasi ini dirancang dengan tingkat presisi, kecepatan, keamanan tinggi, dan kepatuhan standar akuntansi pemerintah (BPK/Inspektorat).
+**SiReKa (Sistem Rekonsiliasi Kas)** adalah platform digital terpadu untuk pengelolaan, validasi, dan rekonsiliasi kas Bendahara Pengeluaran tingkat Satuan Kerja Perangkat Daerah (SKPD) di lingkungan Pemerintah Kota Banjarbaru (Badan Pengelolaan Keuangan dan Aset Daerah - BPKAD). Aplikasi ini dirancang dengan arsitektur verifikasi berjenjang 4-pilar, standar keamanan tinggi (termasuk Autentikasi Dua Faktor 2FA-TOTP), dan kepatuhan standar akuntansi pemerintah.
 
 ---
 
@@ -151,5 +151,11 @@ Untuk menjalin integritas database selama proses pembaruan dari repositori GitHu
   * **Saklar Kontrol Izin Unduh SKPD (ON/OFF Toggle):** Tuas kontrol di Pengaturan Instansi bagi Admin BKAD untuk mengaktifkan atau menonaktifkan izin download Surat Tanda Bukti Digital bagi Operator SKPD (dengan proteksi keamanan 403 saat OFF).
   * **Stempel Digital Pengesahan (*Digital e-Seal*) pada Berita Acara (BA) PDF:** Berita Acara bulanan otomatis mencetak cap stempel pengesahan Konsolidator BKAD ketika status rekonsiliasi telah disahkan *Valid*.
   * **Peningkatan Laman Verifikasi Publik QR Code (`/verifikasi/{id}`):** Tampilan status ganda transparan yang memuat bukti pengesahan Konsolidator BKAD dan tombol unduh slip digital.
-
-
+* **v2.5.0** - **Edisi Khusus Pemerintah Kota Banjarbaru (Arsitektur 4-Pilar, 2FA TOTP, Dynamic BA, & Animasi Interaktif):**
+  * **Alur Verifikasi Berjenjang 4-Pilar:** Implementasi alur rekonsiliasi kas daerah resmi: 1) Operator SKPD -> 2) Pihak Bank Kalsel Cabang Banjarbaru -> 3) Konsolidator BPKAD -> 4) Inspektorat Kota Banjarbaru.
+  * **Jejak Audit Forensik & Verifikasi Log (`verifikasi_logs`):** Setiap aksi persetujuan, penolakan, dan catatan revisi antar instansi dicatat lengkap dengan timestamp, identitas verifikator, dan segel digital SHA-256.
+  * **Penomoran Berita Acara (BA) Dinamis (`BaNumberService`):** Fleksibilitas format penomoran BA melalui pengaturan global/instansi (`900/{NOMOR}/BA-REKON/{KODE_SKPD}/{BULAN_ROMAWI}/{TAHUN}`) dengan generator nomor urut tahunan otomatis.
+  * **Autentikasi Dua Faktor (2FA - RFC 6238 TOTP):** Pengamanan ekstra akun pengguna menggunakan aplikasi otentikator (Google/Microsoft Authenticator) dengan SVG QR Code generator bawaan tanpa dependensi API eksternal dan 8 recovery emergency codes terenkripsi.
+  * **Redesain Halaman Login (Center Card & Bioluminescent Golden Fireflies):** Kartu login simetris di tengah layar (*center page*), responsif di layar mobile dan desktop, berlatar belakang biru tua kedinasan Banjarbaru (`#001938` ke `#00346f`), serta animasi Kunang-Kunang Emas berbasis HTML5 Canvas 60 FPS kustom tanpa gambar AI.
+  * **Halaman Registrasi Operator SKPD (Constellation Mesh & Mode Grab 160px):** Dropdown SKPD cerdas (TomSelect) dan efek partikel konstelasi jaringan dengan mode grab 160px yang otomatis menghubungkan garis putih ke kursor mouse maupun titik sentuh layar (*touch screen*).
+  * **Master Data 87 SKPD Pemerintah Kota Banjarbaru:** Import dan seeder lengkap seluruh unit kerja SKPD Pemko Banjarbaru dari berkas master `kodeskpdbjb.xlsx`.
