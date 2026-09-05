@@ -94,6 +94,24 @@ graph TD
 - Import dan seeder dari berkas master `kodeskpdbjb.xlsx` ke tabel `instansis` melalui `SkpdBanjarbaruSeeder`.
 - Meliputi Sekretariat Daerah, Dinas, Badan, Kecamatan, Kelurahan, Rumah Sakit Daerah Idaman, dan seluruh unit kerja di lingkungan Pemko Banjarbaru.
 
+### G. Redesain Halaman Profil Pengguna Standar Material 3 (`/profile`)
+- **Hero Identity Banner**: Banner profil bergradasi warna Navy Murdjani dan aksen emas Banjarbaru, avatar inisial besar, badge peranan resmi 4-pilar, instansi SKPD, username, dan chip status 2FA.
+- **Formulir Data Diri Kedinasan**: Bahasa Indonesia baku, ikon Material Symbols, serta penguncian field **Username Login** dan **Instansi / Unit Kerja** sebagai *Read-Only* permanen demi kepatuhan identitas yuridis.
+- **Formulir Kata Sandi dengan Fitur Intip**: Dilengkapi toggle mata interaktif (`visibility` / `visibility_off`) berbasis Alpine.js untuk semua field password dan panduan keamanan minimal 8 karakter.
+- **Kartu Proteksi Autentikasi Dua Langkah (2FA / Google Authenticator)**: Kartu terintegrasi dengan badge status perlindungan (*Belum Diaktifkan* / *Aktif Terlindungi*) dan tombol cepat aktivasi Google Authenticator.
+- **Pengamanan Integritas & Jejak Audit (Anti-Self-Deletion)**: Penghapusan tombol merah hapus akun mandiri demi kepatuhan regulasi integritas jejak audit (*Digital Audit Trail*). Digantikan oleh **Kartu Kebijakan Integritas & Tata Kelola Akun Kedinasan**. Method `destroy()` di `ProfileController` dinonaktifkan untuk menolak penghapusan mandiri.
+
+### H. Integrasi Navigasi Bilah Sisi (Sidebar Profile Menu & Quick Card)
+- **Submenu "Profil Saya"**: Ditambahkan pada dropdown menu **Pengaturan** (`route('profile.edit')`) yang dapat diakses oleh seluruh pengguna (semua peranan), lengkap dengan status *active route* otomatis saat berada di halaman profil.
+- **Kartu Akses Cepat Profil Pengguna (Bottom Actions)**: Ditambahkan pada area bawah sidebar (di atas tombol Bantuan dan Logout), menampilkan inisial avatar, nama pengguna, peranan kedinasan, dan tautan langsung ke `/profile`.
+
+### I. Penguatan Otorisasi & Hak Akses Ketat 4-Pilar (Security Hardening)
+- **Restriksi Bank Kalsel (Pilar 2)**:
+  - Dilarang mengakses Master Rekening (menu disembunyikan dan di-protect 403 Forbidden).
+  - Dilarang menambah, mengedit, menghapus, atau mengunggah transaksi kas daerah. FormRequest (`StoreTransaksiRequest`, `UpdateTransaksiRequest`, `UploadTransaksiRequest`) diperkuat dengan pengecekan `authorize(): bool` berbasis `in_array(role, ['admin', 'operator'])`.
+- **Perbaikan Signature Verifikasi Bank**:
+  - Memperbaiki potensi galat 403 `Invalid signature` pada rute verifikasi Bank (`/verifikasi/bank`), memastikan verifikator Bank Kalsel dapat melakukan verifikasi dan penandatanganan digital secara lancar.
+
 ---
 
 ## 4. Struktur Database Utama
@@ -107,19 +125,24 @@ graph TD
 ---
 
 ## 5. Direktori & Berkas Penting
-- **Pengaturan & Auth**:
+- **Pengaturan, Profil & Auth**:
+  - `app/Http/Controllers/ProfileController.php` (Edit profil kedinasan, disable self-deletion)
   - `app/Http/Controllers/Auth/AuthenticatedSessionController.php` (Login & intercept 2FA)
   - `app/Http/Controllers/Auth/TwoFactorController.php` (Setup, QR Code, Recovery Codes)
   - `app/Http/Controllers/PengaturanController.php` & `app/Services/BaNumberService.php` (Pengaturan BA Dinamis)
-- **Verifikasi 4-Pilar**:
-  - `app/Http/Controllers/VerifikasiBankController.php`
-  - `app/Http/Controllers/BaController.php` (Konsolidator)
-  - `app/Http/Controllers/VerifikasiInspektoratController.php`
+- **Verifikasi 4-Pilar & Otorisasi**:
+  - `app/Http/Controllers/VerifikasiBankController.php` (Pilar 2)
+  - `app/Http/Controllers/BaController.php` (Pilar 3: Konsolidator)
+  - `app/Http/Controllers/VerifikasiInspektoratController.php` (Pilar 4: Inspektorat)
+  - `app/Http/Requests/StoreTransaksiRequest.php`, `UpdateTransaksiRequest.php`, `UploadTransaksiRequest.php` (Hardened 403 authorization)
   - `app/Models/VerifikasiLog.php`
 - **Tampilan Antarmuka**:
   - `resources/views/auth/login.blade.php` (Center Card & Golden Fireflies Animation)
   - `resources/views/auth/register.blade.php` (Mesh Network Constellation with Grab 160px)
   - `resources/views/auth/two-factor-challenge.blade.php`
+  - `resources/views/profile/edit.blade.php` (Hero Identity Card & Material 3 Layout)
+  - `resources/views/profile/partials/*.blade.php` (Update Profile, Update Password with Eye Toggle, 2FA, Audit Governance Notice)
   - `resources/views/profile/two-factor.blade.php`
+  - `resources/views/layouts/sidebar.blade.php` (Profil Saya submenu & Quick User Profile Card)
   - `resources/views/laporan/bukti_verifikasi_digital_pdf.blade.php`
   - `resources/views/laporan/ba/pdf.blade.php`

@@ -9,7 +9,7 @@
 ### 1. 🏆 Executive Analytics, Leaderboard & Early Warning System (EWS)
 * **Timeliness Scoring Algorithm (Bobot Waktu Peringkat):** Papan peringkat SKPD Terbaik di dasbor tidak hanya menghitung kuantitas laporan bulanan, tetapi menerapkan bobot kedisiplinan hari pengiriman (Tgl 1–5 = 100 pt, Tgl 6–10 = 85 pt, Tgl 11–15 = 70 pt, > Tgl 15 = 50 pt).
 * **Early Warning System (EWS - Rapor Merah):** Panel pengawasan khusus yang menyorot 5 SKPD dengan keterlambatan terparah atau adanya selisih kas bulanan, memudahkan pembinaan lebih dini oleh Konsolidator dan pimpinan.
-* **Cetak Rapor Kepatuhan Eksekutif (PDF):** Kemudahan mengunduh dokumen laporan performa & kepatuhan seluruh instrumen instansi se-Kabupaten Tapin bersertifikasi resmi berklasifikasi Grade A, B, C, hingga D.
+* **Cetak Rapor Kepatuhan Eksekutif (PDF):** Kemudahan mengunduh dokumen laporan performa & kepatuhan seluruh instrumen instansi se-Kota Banjarbaru bersertifikasi resmi berklasifikasi Grade A, B, C, hingga D.
 
 ### 2. 📱 WhatsApp Generator & Rekap Broadcast Pimpinan (Sinkronisasi Akurat)
 * **Rekapitulasi Siap Salin ke Grup WA:** Dasbor pelaporan otomatis menghasilkan rekapitulasi daftar SKPD yang **Sudah Rekonsiliasi** maupun **Belum Rekonsiliasi** per bulan dengan format rapi dan emotikon informatif yang siap dilarang/dibroadcast ke grup WhatsApp Admin, Konsolidator, maupun Kepala SKPD guna efisiensi koordinasi.
@@ -18,7 +18,7 @@
 
 ### 3. 🗄️ Brankas Digital & Ekspor ZIP Massal (Paket Audit BPK)
 * **Hirarki Dokumen & Quick Pratinjau (Urut Kode SKPD):** Seluruh file Rekening Koran, Buku Kas Umum (BKU), Buku Pembantu Bank, dan Berita Acara (BA) disusun dalam struktur pohon (Tree) rapi dan **diurutkan secara hierarkis berdasarkan Kode SKPD BPKAD** dengan fitur *In-Browser Preview Modal* tanpa harus mendownload file satu per satu.
-* **Ekspor Massal Paket Audit BPK (.ZIP):** Fitur kompresi massal satu klik untuk mengunduh seluruh bukti dukung dokumen se-Kabupaten Tapin dalam 1 file ZIP yang **otomatis distrukturkan ke dalam sub-folder Kode & Nama SKPD beserta bulan** (contoh: `1-01-01-dinas-kesehatan/Bulan_06_Juni/Rekening_Koran.pdf`), membedah ratusan jam pemeriksaan akuntansi teknis.
+* **Ekspor Massal Paket Audit BPK (.ZIP):** Fitur kompresi massal satu klik untuk mengunduh seluruh bukti dukung dokumen se-Kota Banjarbaru dalam 1 file ZIP yang **otomatis distrukturkan ke dalam sub-folder Kode & Nama SKPD beserta bulan** (contoh: `1-01-01-dinas-kesehatan/Bulan_06_Juni/Rekening_Koran.pdf`), membedah ratusan jam pemeriksaan akuntansi teknis.
 * **🛡️ Sistem Kontrol Proteksi Bukti Audit (Anti-Manipulasi Dokumen & Audit Trail):**
   - **Saklar Eksklusif Admin (Izin Re-Upload & Timpa Dokumen):** Dalam rangka pengamanan jejak audit keuangan daerah (Anti-Fraud BPK/Inspektorat), operator SKPD dilarang mengganti atau menimpa dokumen bukti yang sudah disahkan. Namun saat terjadi masa migrasi atau perbaikan dokumen massal, Admin BKAD dapat mengaktifkan sementara saklar **"Izin Re-Upload Dokumen"** dari dasbor Pengaturan Instansi (`/pengaturan/instansi`).
   - **Penghapusan Dokumen Spesifik oleh Admin:** Jika ada SKPD yang salah unggah pada status transaksi yang sudah diverifikasi, Admin memiliki hak akses khusus berupa tombol **"Hapus"** pada masing-masing dokumen. Hal ini akan menghapus file yang salah dan secara otomatis membuka kembali akses *upload* untuk dokumen tersebut bagi SKPD bersangkutan tanpa harus membuka izin re-upload secara global.
@@ -68,7 +68,7 @@
 
 ### 1. Deployment Awal / Instalasi Baru:
 ```bash
-git clone https://github.com/rullyperdhana/rekonkaske.git sireka
+git clone https://github.com/rullyperdhana/sirekabjb.git sireka
 cd sireka
 composer install --optimize-autoloader --no-dev
 cp .env.example .env
@@ -110,13 +110,15 @@ Untuk menjalin integritas database selama proses pembaruan dari repositori GitHu
 
 ---
 
-## 👥 Struktur Hak Akses (Role Base)
-1. **Admin Pusat (BKAD Tapin):** Kontrol penuh master data, manajemen storage NAS, proteksi audit (izin re-upload SKPD), audit log, buka/tutup registrasi operator, backup/restore DB, mode maintenance pengaman, dan **wewenang khusus merubah status transaksi verified kembali ke draft (*Reset to Draft*) atas rekomendasi Konsolidator**.
-2. **Konsolidator:** Melakukan pemeriksaan (*fact-check*) laporan rekonsiliasi yang telah diverifikasi SKPD beserta 4 berkas bukti dukung fisik, memberikan tanda kelayakan (*Valid Konsolidator*), mencatat evaluasi/catatan kesalahan bertingkat (*multi-round revision timeline*), memicu koordinasi pemulihan draft ke Admin via integrasi WhatsApp otomatis, memantau EWS dan Leaderboard, serta mengekspor laporan eksekutif PDF & ZIP Paket Audit BPK.
-3. **Operator SKPD:** Mengelola input saldo rekonsiliasi, mengunggah 4 berkas bukti dukung (BA Manual, BKU, Pembantu Bank, Rekening Koran), melakukan verifikasi mandiri (*Verified*) untuk pengesahan awal, membaca riwayat catatan koreksi Konsolidator, dan memperbaiki data jika transaksi dikembalikan ke draft oleh Admin.
+## 👥 Struktur Hak Akses Berjenjang 4-Pilar (Pemerintah Kota Banjarbaru)
+1. **Administrator Sistem (BPKAD Kota Banjarbaru):** Kontrol penuh sistem, manajemen pengguna & instansi 87 SKPD, manajemen storage & NAS, mode maintenance (lockdown), audit log forensik, template penomoran BA dinamis, serta wewenang supervisi menyeluruh atas seluruh siklus rekonsiliasi kas.
+2. **Pilar 1 - Operator SKPD (Bendahara Pengeluaran):** Mengelola entri saldo kas bulanan (saldo awal, saldo akhir, mutasi kas), mengunggah 4 berkas bukti dukung (Rekening Koran, BKU, Register/Pembantu Kas, BA Rekon), melakukan pengajuan verifikasi ke pihak Bank, serta membaca riwayat evaluasi revisi jika terdapat catatan perbaikan.
+3. **Pilar 2 - Bank Kalsel (Verifikator Bank Mitra):** Melakukan pemeriksaan kesesuaian saldo dan mutasi rekening kas daerah dengan rekening koran resmi Bank Kalsel Cabang Banjarbaru. Memiliki wewenang mengesahkan (*Verified Bank*) atau menerbitkan catatan revisi bank. Memiliki restriksi keamanan tinggi: tidak dapat mengakses Master Rekening dan tidak dapat membuat/mengubah/menghapus entri transaksi.
+4. **Pilar 3 - Konsolidator Kasda (BPKAD Kota Banjarbaru):** Melakukan pemeriksaan lanjutan atas laporan yang telah disahkan Bank Kalsel, memverifikasi kesesuaian saldo Kasda, memeriksa kelengkapan checklist 4 berkas fisik, menerbitkan catatan koreksi Kasda, serta memberikan tanda kelayakan (*Valid Konsolidator*).
+5. **Pilar 4 - Pengesahan Akhir (Inspektorat Kota Banjarbaru):** Melakukan pengawasan dan audit kepatuhan menyeluruh atas rekonsiliasi yang telah disahkan oleh Bank Kalsel dan Konsolidator Kasda, menerbitkan Nomor Berita Acara (BA) resmi, serta membubuhkan stempel digital pengesahan (*Digital e-Seal*) akhir.
 
 ---
-*SiReKa - Solusi Digitalisasi Transparan & Akuntabel untuk Pengelolaan Keuangan Pemerintah Kabupaten Tapin.*
+*SiReKa - Solusi Digitalisasi Transparan & Akuntabel untuk Pengelolaan Keuangan Pemerintah Kota Banjarbaru.*
 
 ---
 ## 📝 Changelog
@@ -147,10 +149,10 @@ Untuk menjalin integritas database selama proses pembaruan dari repositori GitHu
   * **Menu Antrean Verifikasi di Sidebar:** Menu langsung khusus Admin dan Konsolidator lengkap dengan *badge counter* (indikator angka berdenyut) jumlah berkas yang menunggu pemeriksaan.
 * **v2.4.0** - **Laporan Verifikasi Konsolidator, Tanda Bukti Digital (Slip PDF), Kontrol Unduh SKPD, & Stempel Digital BA:**
   * **Modul Laporan Verifikasi Konsolidator (`/laporan/verifikasi-konsolidator`):** Rekapitulasi register pemeriksaan kas daerah tingkat SKPD untuk Admin & Konsolidator dengan 3 kartu metrik ringkasan, filter bulan/SKPD/status, cetak register PDF (Landscape), dan ekspor Excel (.xlsx).
-  * **Surat Tanda Bukti Pemeriksaan Rekonsiliasi Kas Daerah (Slip PDF A4):** Dokumen resmi 1 lembar ber-KOP BKAD dengan Nomor Register Digital unik (`REG-KONS/TAPIN/...`), checklist pengujian 4 bukti dukung fisik, identitas pemeriksa, waktu pemeriksaan (WITA), dan QR Code otentikasi.
-  * **Saklar Kontrol Izin Unduh SKPD (ON/OFF Toggle):** Tuas kontrol di Pengaturan Instansi bagi Admin BKAD untuk mengaktifkan atau menonaktifkan izin download Surat Tanda Bukti Digital bagi Operator SKPD (dengan proteksi keamanan 403 saat OFF).
-  * **Stempel Digital Pengesahan (*Digital e-Seal*) pada Berita Acara (BA) PDF:** Berita Acara bulanan otomatis mencetak cap stempel pengesahan Konsolidator BKAD ketika status rekonsiliasi telah disahkan *Valid*.
-  * **Peningkatan Laman Verifikasi Publik QR Code (`/verifikasi/{id}`):** Tampilan status ganda transparan yang memuat bukti pengesahan Konsolidator BKAD dan tombol unduh slip digital.
+  * **Surat Tanda Bukti Pemeriksaan Rekonsiliasi Kas Daerah (Slip PDF A4):** Dokumen resmi 1 lembar ber-KOP BPKAD dengan Nomor Register Digital unik (`REG-KONS/BJB/...`), checklist pengujian 4 bukti dukung fisik, identitas pemeriksa, waktu pemeriksaan (WITA), dan QR Code otentikasi.
+  * **Saklar Kontrol Izin Unduh SKPD (ON/OFF Toggle):** Tuas kontrol di Pengaturan Instansi bagi Admin BPKAD untuk mengaktifkan atau menonaktifkan izin download Surat Tanda Bukti Digital bagi Operator SKPD (dengan proteksi keamanan 403 saat OFF).
+  * **Stempel Digital Pengesahan (*Digital e-Seal*) pada Berita Acara (BA) PDF:** Berita Acara bulanan otomatis mencetak cap stempel pengesahan Konsolidator BPKAD ketika status rekonsiliasi telah disahkan *Valid*.
+  * **Peningkatan Laman Verifikasi Publik QR Code (`/verifikasi/{id}`):** Tampilan status ganda transparan yang memuat bukti pengesahan Konsolidator BPKAD dan tombol unduh slip digital.
 * **v2.5.0** - **Edisi Khusus Pemerintah Kota Banjarbaru (Arsitektur 4-Pilar, 2FA TOTP, Dynamic BA, & Animasi Interaktif):**
   * **Alur Verifikasi Berjenjang 4-Pilar:** Implementasi alur rekonsiliasi kas daerah resmi: 1) Operator SKPD -> 2) Pihak Bank Kalsel Cabang Banjarbaru -> 3) Konsolidator BPKAD -> 4) Inspektorat Kota Banjarbaru.
   * **Jejak Audit Forensik & Verifikasi Log (`verifikasi_logs`):** Setiap aksi persetujuan, penolakan, dan catatan revisi antar instansi dicatat lengkap dengan timestamp, identitas verifikator, dan segel digital SHA-256.
@@ -159,3 +161,13 @@ Untuk menjalin integritas database selama proses pembaruan dari repositori GitHu
   * **Redesain Halaman Login (Center Card & Bioluminescent Golden Fireflies):** Kartu login simetris di tengah layar (*center page*), responsif di layar mobile dan desktop, berlatar belakang biru tua kedinasan Banjarbaru (`#001938` ke `#00346f`), serta animasi Kunang-Kunang Emas berbasis HTML5 Canvas 60 FPS kustom tanpa gambar AI.
   * **Halaman Registrasi Operator SKPD (Constellation Mesh & Mode Grab 160px):** Dropdown SKPD cerdas (TomSelect) dan efek partikel konstelasi jaringan dengan mode grab 160px yang otomatis menghubungkan garis putih ke kursor mouse maupun titik sentuh layar (*touch screen*).
   * **Master Data 87 SKPD Pemerintah Kota Banjarbaru:** Import dan seeder lengkap seluruh unit kerja SKPD Pemko Banjarbaru dari berkas master `kodeskpdbjb.xlsx`.
+* **v2.5.1** - **Penyelarasan Otorisasi Ketat 4-Pilar, Redesain Profil Material 3, & Integrasi Sidebar:**
+  * **Penguatan Otorisasi Ketat 4-Pilar (Security Hardening):** Membatasi hak akses verifikator Bank Kalsel (Pilar 2) agar tidak dapat mengakses Master Rekening, serta menolak operasi penambahan, pengeditan, penghapusan, dan pengunggahan transaksi via FormRequest authorization (`authorize(): bool`) dengan respon HTTP 403 Forbidden.
+  * **Perbaikan Signature Verifikasi Bank:** Menuntaskan penanganan error 403 `Invalid signature` pada rute `/verifikasi/bank` sehingga verifikasi dan penandatanganan digital oleh Bank Kalsel berjalan lancar.
+  * **Redesain Halaman Profil Pengguna Standar Material 3 (`/profile`):**
+    * Menghadirkan **Hero Identity Banner** bergradasi navy/amber khas Pemko Banjarbaru dengan inisial avatar besar, badge peranan kedinasan, instansi SKPD, username, dan chip status 2FA.
+    * Mengganti template bawaan dengan formulir Bahasa Indonesia baku, mengunci **Username** dan **Instansi / Unit Kerja** sebagai *Read-Only* permanen bertanda gembok demi kepatuhan identitas yuridis.
+    * Formulir kata sandi modern dilengkapi toggle mata interaktif (`visibility` / `visibility_off`) berbasis Alpine.js di semua kolom kata sandi.
+    * Kartu pengelolaan 2FA / Google Authenticator terintegrasi dengan badge status perlindungan.
+  * **Pengamanan Integritas Akun Kedinasan (Anti-Self-Deletion & Digital Audit Trail):** Menghapus tombol merah hapus akun mandiri dan memblokir method `destroy()` di `ProfileController` guna melindungi keutuhan jejak audit rekonsiliasi kas daerah. Digantikan oleh Kartu Kebijakan Integritas & Tata Kelola Akun Kedinasan resmi.
+  * **Integrasi Navigasi Bilah Sisi (Sidebar):** Menambahkan submenu **Profil Saya** (`route('profile.edit')`) di bawah dropdown Pengaturan dan **Kartu Akses Cepat Profil Pengguna** di Bottom Actions sidebar dengan status rute aktif dinamis.
