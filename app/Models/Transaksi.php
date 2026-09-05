@@ -29,6 +29,21 @@ class Transaksi extends Model
         return LogOptions::defaults()->logAll()->logOnlyDirty();
     }
 
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'tanggal_ba' => 'date',
+            'bank_verified_at' => 'datetime',
+            'checked_at' => 'datetime',
+            'inspektorat_verified_at' => 'datetime',
+        ];
+    }
+
     public function skpd()
     {
         return $this->belongsTo(Skpd::class);

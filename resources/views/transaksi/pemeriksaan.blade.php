@@ -135,7 +135,7 @@
                             <p class="text-xs text-blue-800/80 mt-0.5">
                                 Diverifikasi oleh: <span class="font-semibold">{{ $transaksi->bankChecker->name ?? 'Verifikator Bank Kalsel' }}</span> 
                                 @if($transaksi->bank_verified_at)
-                                    &bull; {{ $transaksi->bank_verified_at->format('d/m/Y H:i') }} WITA
+                                    &bull; {{ \Carbon\Carbon::parse($transaksi->bank_verified_at)->format('d/m/Y H:i') }} WITA
                                 @endif
                             </p>
                             @if($transaksi->bank_catatan)
