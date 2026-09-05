@@ -118,8 +118,13 @@
         @if(in_array(auth()->user()->role, ['admin', 'konsolidator']))
         @php
             $pendingVerifikasiCount = \App\Models\Transaksi::where('periode_tahun', session('tahun_login') ?? date('Y'))
-                ->where('status_verifikasi', 'verified')
                 ->where('status_konsolidator', 'menunggu')
+                ->where(function($q) {
+                    $q->where('tahap_verifikasi', 'menunggu_konsolidator')
+                      ->orWhere(function($sub) {
+                          $sub->where('status_verifikasi', 'verified')->where('bank_status', 'valid');
+                      });
+                })
                 ->count();
         @endphp
         <li>

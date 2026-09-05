@@ -368,7 +368,12 @@ class TransaksiController extends Controller
         $baseQuery = Transaksi::where('periode_tahun', $tahunAktif);
 
         $counts = [
-            'menunggu' => (clone $baseQuery)->where('status_verifikasi', 'verified')->where('status_konsolidator', 'menunggu')->count(),
+            'menunggu' => (clone $baseQuery)->where('status_konsolidator', 'menunggu')->where(function($q) {
+                $q->where('tahap_verifikasi', 'menunggu_konsolidator')
+                  ->orWhere(function($sub) {
+                      $sub->where('status_verifikasi', 'verified')->where('bank_status', 'valid');
+                  });
+            })->count(),
             'perlu_perbaikan' => (clone $baseQuery)->where('status_konsolidator', 'perlu_perbaikan')->count(),
             'siap_reset' => (clone $baseQuery)->where('status_verifikasi', 'verified')->where('status_konsolidator', 'perlu_perbaikan')->count(),
             'valid' => (clone $baseQuery)->where('status_konsolidator', 'valid')->count(),
@@ -381,7 +386,12 @@ class TransaksiController extends Controller
 
         // Filter berdasarkan Tab Aktif
         if ($activeTab === 'menunggu') {
-            $query->where('status_verifikasi', 'verified')->where('status_konsolidator', 'menunggu');
+            $query->where('status_konsolidator', 'menunggu')->where(function($q) {
+                $q->where('tahap_verifikasi', 'menunggu_konsolidator')
+                  ->orWhere(function($sub) {
+                      $sub->where('status_verifikasi', 'verified')->where('bank_status', 'valid');
+                  });
+            });
         } elseif ($activeTab === 'perlu_perbaikan') {
             $query->where('status_konsolidator', 'perlu_perbaikan');
         } elseif ($activeTab === 'siap_reset') {
@@ -423,7 +433,12 @@ class TransaksiController extends Controller
             abort(403, 'Akses khusus Admin dan Konsolidator.');
         }
 
-        $transaksi->load(['skpd', 'rekening', 'user', 'checker', 'catatans.user']);
+        // Hardening Pilar 3: Konsolidator hanya memeriksa transaksi yang sudah disahkan Bank Kalsel
+        if (in_array($transaksi->tahap_verifikasi, ['menunggu_bank', 'skpd_draft']) && Auth::user()->role !== 'admin') {
+            return redirect()->route('transaksi.antrean')->with('error', 'Transaksi ' . ($transaksi->skpd->nama ?? 'SKPD') . ' periode bulan ' . $transaksi->periode_bulan . ' masih menunggu verifikasi rekening koran oleh Bank Kalsel (Pilar 2).');
+        }
+
+        $transaksi->load(['skpd', 'rekening', 'user', 'checker', 'catatans.user', 'bankChecker']);
 
         $namaBulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
 
@@ -436,24 +451,39 @@ class TransaksiController extends Controller
         // Navigasi cepat: Cari transaksi berikutnya dan sebelumnya dalam antrean tahun aktif
         $nextTrx = Transaksi::where('id', '!=', $transaksi->id)
             ->where('periode_tahun', $transaksi->periode_tahun)
-            ->where('status_verifikasi', 'verified')
             ->where('status_konsolidator', 'menunggu')
+            ->where(function($q) {
+                $q->where('tahap_verifikasi', 'menunggu_konsolidator')
+                  ->orWhere(function($sub) {
+                      $sub->where('status_verifikasi', 'verified')->where('bank_status', 'valid');
+                  });
+            })
             ->orderBy('periode_bulan', 'asc')
             ->orderBy('id', 'asc')
             ->first();
 
         $prevTrx = Transaksi::where('id', '!=', $transaksi->id)
             ->where('periode_tahun', $transaksi->periode_tahun)
-            ->where('status_verifikasi', 'verified')
             ->where('status_konsolidator', 'menunggu')
+            ->where(function($q) {
+                $q->where('tahap_verifikasi', 'menunggu_konsolidator')
+                  ->orWhere(function($sub) {
+                      $sub->where('status_verifikasi', 'verified')->where('bank_status', 'valid');
+                  });
+            })
             ->where('id', '<', $transaksi->id)
             ->orderBy('id', 'desc')
             ->first();
 
         // Hitung sisa antrean yang belum diperiksa
         $sisaAntrean = Transaksi::where('periode_tahun', $transaksi->periode_tahun)
-            ->where('status_verifikasi', 'verified')
             ->where('status_konsolidator', 'menunggu')
+            ->where(function($q) {
+                $q->where('tahap_verifikasi', 'menunggu_konsolidator')
+                  ->orWhere(function($sub) {
+                      $sub->where('status_verifikasi', 'verified')->where('bank_status', 'valid');
+                  });
+            })
             ->count();
 
         return view('transaksi.pemeriksaan', compact('transaksi', 'namaBulan', 'adminWa', 'nextTrx', 'prevTrx', 'sisaAntrean'));
@@ -463,6 +493,11 @@ class TransaksiController extends Controller
     {
         if (!in_array(Auth::user()->role, ['admin', 'konsolidator'])) {
             abort(403, 'Akses khusus Admin dan Konsolidator.');
+        }
+
+        // Hardening Pilar 3: Cegah persetujuan jika Bank belum verifikasi
+        if (in_array($transaksi->tahap_verifikasi, ['menunggu_bank', 'skpd_draft']) && Auth::user()->role !== 'admin') {
+            return redirect()->back()->with('error', 'Transaksi ini belum diverifikasi dan disahkan oleh Bank Kalsel (Pilar 2).');
         }
 
         $request->validate([
@@ -531,8 +566,13 @@ class TransaksiController extends Controller
             // Cari transaksi berikutnya dalam antrean yang menunggu pemeriksaan
             $nextTrx = Transaksi::where('id', '!=', $transaksi->id)
                 ->where('periode_tahun', $transaksi->periode_tahun)
-                ->where('status_verifikasi', 'verified')
                 ->where('status_konsolidator', 'menunggu')
+                ->where(function($q) {
+                    $q->where('tahap_verifikasi', 'menunggu_konsolidator')
+                      ->orWhere(function($sub) {
+                          $sub->where('status_verifikasi', 'verified')->where('bank_status', 'valid');
+                      });
+                })
                 ->orderBy('periode_bulan', 'asc')
                 ->orderBy('id', 'asc')
                 ->first();
@@ -555,6 +595,11 @@ class TransaksiController extends Controller
 
         if (Auth::user()->role === 'operator' && Auth::user()->skpd_id != $transaksi->skpd_id) {
             abort(403, 'Anda tidak memiliki hak akses ke transaksi ini.');
+        }
+
+        // Hardening: Pastikan transaksi masih dalam status draft atau revisi
+        if (!in_array($transaksi->tahap_verifikasi, ['skpd_draft', 'revisi_bank', 'revisi_konsolidator']) && Auth::user()->role !== 'admin') {
+            return redirect()->back()->with('error', 'Transaksi ini sedang dalam proses verifikasi atau sudah disahkan.');
         }
 
         if (!$transaksi->file_rekening_koran) {

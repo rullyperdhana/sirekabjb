@@ -120,6 +120,44 @@
             <!-- LEFT: 7 Cols - Comparison Data & Difference Analysis -->
             <div class="lg:col-span-7 space-y-6">
                 
+                <!-- Status Pengesahan Pilar 2 (Bank Kalsel) -->
+                @if($transaksi->bank_status === 'valid')
+                <div class="bg-blue-500/10 border border-blue-500/30 text-blue-950 p-4 rounded-2xl flex items-center justify-between shadow-xs">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center shrink-0 shadow-sm">
+                            <span class="material-symbols-outlined text-[22px]">verified</span>
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <h3 class="font-bold text-sm text-blue-900">Pilar 2 Disahkan: Bank Kalsel</h3>
+                                <span class="px-2 py-0.5 rounded-full bg-blue-600 text-white font-bold text-[10px] uppercase tracking-wider">Valid</span>
+                            </div>
+                            <p class="text-xs text-blue-800/80 mt-0.5">
+                                Diverifikasi oleh: <span class="font-semibold">{{ $transaksi->bankChecker->name ?? 'Verifikator Bank Kalsel' }}</span> 
+                                @if($transaksi->bank_verified_at)
+                                    &bull; {{ $transaksi->bank_verified_at->format('d/m/Y H:i') }} WITA
+                                @endif
+                            </p>
+                            @if($transaksi->bank_catatan)
+                                <p class="text-[11px] text-blue-900 italic mt-1 bg-white/60 p-1.5 rounded-lg border border-blue-200">
+                                    "{{ $transaksi->bank_catatan }}"
+                                </p>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+                @elseif($transaksi->tahap_verifikasi === 'menunggu_bank')
+                <div class="bg-amber-500/10 border border-amber-500/30 text-amber-950 p-4 rounded-2xl flex items-center gap-3 shadow-xs">
+                    <div class="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center shrink-0 shadow-sm">
+                        <span class="material-symbols-outlined text-[22px]">pending</span>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-sm text-amber-900">Menunggu Pengesahan Bank Kalsel (Pilar 2)</h3>
+                        <p class="text-xs text-amber-800/80 mt-0.5">Berkas rekonsiliasi kas ini belum diverifikasi dan disahkan oleh pihak Bank Mitra.</p>
+                    </div>
+                </div>
+                @endif
+
                 <!-- Card Saldo BKU vs Bank -->
                 <div class="bg-surface rounded-2xl border border-outline-variant shadow-sm overflow-hidden">
                     <div class="p-5 bg-surface-container-low border-b border-outline-variant flex items-center justify-between">

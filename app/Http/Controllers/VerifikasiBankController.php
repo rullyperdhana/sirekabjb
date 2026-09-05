@@ -80,6 +80,12 @@ class VerifikasiBankController extends Controller
     public function approve(Request $request, Transaksi $transaksi)
     {
         $this->checkAccess();
+
+        // Hardening Pilar 2: Bank hanya memproses transaksi yang berada di antrean Bank
+        if (!in_array($transaksi->tahap_verifikasi, ['menunggu_bank', 'skpd_draft']) && Auth::user()->role !== 'admin') {
+            return redirect()->route('verifikasi.bank.index')->with('error', 'Transaksi tidak berada dalam antrean verifikasi Bank Kalsel.');
+        }
+
         $request->validate([
             'catatan' => 'nullable|string|max:500',
         ]);
@@ -120,6 +126,12 @@ class VerifikasiBankController extends Controller
     public function revisi(Request $request, Transaksi $transaksi)
     {
         $this->checkAccess();
+
+        // Hardening Pilar 2: Bank hanya memproses transaksi yang berada di antrean Bank
+        if (!in_array($transaksi->tahap_verifikasi, ['menunggu_bank', 'skpd_draft']) && Auth::user()->role !== 'admin') {
+            return redirect()->route('verifikasi.bank.index')->with('error', 'Transaksi tidak berada dalam antrean verifikasi Bank Kalsel.');
+        }
+
         $request->validate([
             'catatan' => 'required|string|max:500',
         ], [

@@ -61,6 +61,12 @@ class VerifikasiInspektoratController extends Controller
     public function review(Transaksi $transaksi)
     {
         $this->checkAccess();
+
+        // Hardening Pilar 4: Inspektorat hanya mereview berkas yang sudah selesai di Konsolidator atau sudah disahkan
+        if (!in_array($transaksi->tahap_verifikasi, ['menunggu_inspektorat', 'disetujui_final', 'revisi_inspektorat']) && Auth::user()->role !== 'admin') {
+            return redirect()->route('verifikasi.inspektorat.index')->with('error', 'Transaksi ini belum selesai diverifikasi oleh Konsolidator Kasda BPKAD (Pilar 3).');
+        }
+
         $transaksi->load(['skpd', 'rekening', 'user', 'bankChecker', 'checker', 'verifikasiLogs.user']);
         $namaBulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
 
@@ -76,6 +82,12 @@ class VerifikasiInspektoratController extends Controller
     public function approve(Request $request, Transaksi $transaksi)
     {
         $this->checkAccess();
+
+        // Hardening Pilar 4: Pastikan tahap adalah menunggu_inspektorat
+        if ($transaksi->tahap_verifikasi !== 'menunggu_inspektorat' && Auth::user()->role !== 'admin') {
+            return redirect()->route('verifikasi.inspektorat.index')->with('error', 'Transaksi ini belum selesai diverifikasi oleh Konsolidator Kasda BPKAD (Pilar 3).');
+        }
+
         $request->validate([
             'nomor_ba' => 'required|string|max:255',
             'catatan' => 'nullable|string|max:500',
@@ -122,6 +134,12 @@ class VerifikasiInspektoratController extends Controller
     public function revisi(Request $request, Transaksi $transaksi)
     {
         $this->checkAccess();
+
+        // Hardening Pilar 4: Pastikan transaksi dalam antrean inspektorat
+        if ($transaksi->tahap_verifikasi !== 'menunggu_inspektorat' && Auth::user()->role !== 'admin') {
+            return redirect()->route('verifikasi.inspektorat.index')->with('error', 'Transaksi ini belum berada dalam antrean pemeriksaan Inspektorat.');
+        }
+
         $request->validate([
             'catatan' => 'required|string|max:500',
         ], [
