@@ -32,17 +32,24 @@ graph TD
     I --> J[Cetak Berita Acara Rekon + Lembar Bukti Verifikasi Digital 4-Pilar]
 ```
 
-### Hak Akses Pengguna (Roles):
-1. **Admin (`admin`)**:
-   - Manajemen instansi SKPD, user, pengaturan global, kunci periode rekonsiliasi, reset data, manajemen storage (Lokal/NAS/S3), kontrol registrasi mandiri, dan pengaturan pola nomor Berita Acara.
-2. **Operator SKPD (`operator`)**:
-   - Entri transaksi kas bulanan, input saldo bank, upload berkas pendukung (Rekening Koran, BKU, Register Kas, Berita Acara Kas), cetak Berita Acara, pratinjau timeline verifikasi.
-3. **Pihak Bank (`bank` - Bank Kalsel Cabang Banjarbaru)**:
-   - Verifikasi kesesuaian nilai rekening koran dan mutasi kas bank, persetujuan/catatan revisi bank terhadap transaksi SKPD.
-4. **Konsolidator BPKAD (`konsolidator`)**:
-   - Verifikasi teknis Kasda, checklist 5 butir kelengkapan berkas fisik/digital, penerbitan catatan per butir dokumen, tanda bukti verifikasi digital konsolidator.
-5. **Inspektorat Kota Banjarbaru (`inspektorat`)**:
-   - Pengawasan kepatuhan akhir, audit internal, pengesahan final rekonsiliasi, dan penerbitan nomor Berita Acara (BA).
+### Matriks Hak Akses Pengguna (Role Permission Matrix):
+| Menu / Fitur | Admin (`admin`) | Operator SKPD (`operator`) | Bank Kalsel (`bank`) | Konsolidator Kasda (`konsolidator`) | Inspektorat (`inspektorat`) |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| **Dashboard** | ✅ Penuh | ✅ SKPD Sendiri | ✅ Monitoring | ✅ Rekap Daerah | ✅ Pengawasan |
+| **Master SKPD & Tahun** | ✅ CRUD | ❌ 403 (Hidden) | ❌ 403 (Hidden) | ❌ 403 (Hidden) | ❌ 403 (Hidden) |
+| **Master Rekening** | ✅ CRUD | ✅ CRUD (SKPD) | ❌ 403 (Hidden) | ❌ 403 (Hidden) | ❌ 403 (Hidden) |
+| **Data Entri Transaksi** | ✅ CRUD | ✅ CRUD (SKPD) | ❌ Read-Only | ❌ Read-Only | ❌ Read-Only |
+| **Upload Dokumen Bukti** | ✅ Penuh | ✅ SKPD Sendiri | ❌ 403 | ❌ 403 | ❌ 403 |
+| **Pilar 2: Verifikasi Bank** | ✅ Full Review | ❌ 403 (Hidden) | ✅ Review & Sahkan | ❌ 403 (Hidden) | ❌ 403 (Hidden) |
+| **Pilar 3: Verifikasi Kasda** | ✅ Full Review | ❌ 403 (Hidden) | ❌ 403 (Hidden) | ✅ Review & Checklist | ❌ 403 (Hidden) |
+| **Pilar 4: Pengesahan BA** | ✅ Full Review | ❌ 403 (Hidden) | ❌ 403 (Hidden) | ❌ 403 (Hidden) | ✅ Audit & Terbitkan BA |
+| **Berita Acara & Rekap BA** | ✅ Semua SKPD | ✅ SKPD Sendiri | ✅ Lihat & Unduh | ✅ Semua SKPD | ✅ Semua SKPD |
+| **Arsip Dokumen (Tree)** | ✅ Semua SKPD | ❌ (Hidden) | ❌ 403 (Hidden) | ✅ Unduh & Bulk ZIP | ✅ Audit Arsip & Unduh |
+| **Konsolidasi Daerah** | ✅ Lihat & Ekspor | ❌ (Hidden) | ❌ 403 (Hidden) | ✅ Lihat & Ekspor | ✅ Audit Konsolidasi |
+| **Tunggakan Kepatuhan** | ✅ Pantau | ❌ (Hidden) | ❌ 403 (Hidden) | ✅ Pantau | ✅ Audit Kepatuhan |
+| **Pengaturan Instansi/Kop** | ✅ Penuh | ✅ SKPD Sendiri | ❌ 403 (Hidden) | ❌ 403 (Hidden) | ❌ 403 (Hidden) |
+| **User, Storage & Maintenance** | ✅ Penuh | ❌ 403 (Hidden) | ❌ 403 (Hidden) | ❌ 403 (Hidden) | ❌ 403 (Hidden) |
+| **Ubah Password & 2FA** | ✅ Ada | ✅ Ada | ✅ Ada | ✅ Ada | ✅ Ada |
 
 ---
 

@@ -12,7 +12,7 @@ class DokumenController extends Controller
     public function tree(Request $request)
     {
         // Hanya Admin dan Konsolidator yang boleh mengakses
-        if (!in_array(Auth::user()->role, ['admin', 'konsolidator'])) {
+        if (!in_array(Auth::user()->role, ['admin', 'konsolidator', 'inspektorat'])) {
             abort(403);
         }
 
@@ -123,7 +123,7 @@ class DokumenController extends Controller
 
     public function eksporExcel(Request $request)
     {
-        if (!in_array(Auth::user()->role, ['admin', 'konsolidator'])) {
+        if (!in_array(Auth::user()->role, ['admin', 'konsolidator', 'inspektorat'])) {
             abort(403);
         }
 
@@ -188,7 +188,7 @@ class DokumenController extends Controller
 
     public function cetakPdf(Request $request)
     {
-        if (!in_array(Auth::user()->role, ['admin', 'konsolidator'])) {
+        if (!in_array(Auth::user()->role, ['admin', 'konsolidator', 'inspektorat'])) {
             abort(403);
         }
 
@@ -257,7 +257,7 @@ class DokumenController extends Controller
 
     public function downloadZip(Transaksi $transaksi)
     {
-        if (!in_array(Auth::user()->role, ['admin', 'konsolidator'])) {
+        if (!in_array(Auth::user()->role, ['admin', 'konsolidator', 'inspektorat'])) {
             abort(403);
         }
 
@@ -304,7 +304,7 @@ class DokumenController extends Controller
      */
     public function bulkDownloadZip(Request $request)
     {
-        if (!in_array(Auth::user()->role, ['admin', 'konsolidator'])) {
+        if (!in_array(Auth::user()->role, ['admin', 'konsolidator', 'inspektorat'])) {
             abort(403, 'Akses khusus Admin dan Konsolidator');
         }
 

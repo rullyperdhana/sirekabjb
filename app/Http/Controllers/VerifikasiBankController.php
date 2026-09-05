@@ -9,15 +9,11 @@ use Illuminate\Support\Facades\Auth;
 
 class VerifikasiBankController extends Controller
 {
-    public function __construct()
+    private function checkAccess()
     {
-        // Hanya role bank dan admin yang berhak mengakses
-        $this->middleware(function ($request, $next) {
-            if (!in_array(Auth::user()->role, ['bank', 'admin'])) {
-                abort(403, 'Akses terbatas untuk Verifikator Pihak Bank dan Administrator.');
-            }
-            return $next($request);
-        });
+        if (!Auth::check() || !in_array(Auth::user()->role, ['bank', 'admin'])) {
+            abort(403, 'Akses terbatas untuk Verifikator Pihak Bank dan Administrator.');
+        }
     }
 
     /**
@@ -25,6 +21,7 @@ class VerifikasiBankController extends Controller
      */
     public function index(Request $request)
     {
+        $this->checkAccess();
         $tahun = session('tahun_login', date('Y'));
         $statusFilter = $request->get('status', 'menunggu');
 
@@ -70,6 +67,7 @@ class VerifikasiBankController extends Controller
      */
     public function review(Transaksi $transaksi)
     {
+        $this->checkAccess();
         $transaksi->load(['skpd', 'rekening', 'user', 'bankChecker', 'verifikasiLogs.user']);
         $namaBulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
 
@@ -81,6 +79,7 @@ class VerifikasiBankController extends Controller
      */
     public function approve(Request $request, Transaksi $transaksi)
     {
+        $this->checkAccess();
         $request->validate([
             'catatan' => 'nullable|string|max:500',
         ]);
@@ -120,6 +119,7 @@ class VerifikasiBankController extends Controller
      */
     public function revisi(Request $request, Transaksi $transaksi)
     {
+        $this->checkAccess();
         $request->validate([
             'catatan' => 'required|string|max:500',
         ], [

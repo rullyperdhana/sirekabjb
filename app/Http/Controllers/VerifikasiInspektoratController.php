@@ -15,14 +15,13 @@ class VerifikasiInspektoratController extends Controller
     public function __construct(BaNumberService $baNumberService)
     {
         $this->baNumberService = $baNumberService;
+    }
 
-        // Hanya role inspektorat dan admin yang berhak mengakses
-        $this->middleware(function ($request, $next) {
-            if (!in_array(Auth::user()->role, ['inspektorat', 'admin'])) {
-                abort(403, 'Akses terbatas untuk Auditor Inspektorat dan Administrator.');
-            }
-            return $next($request);
-        });
+    private function checkAccess()
+    {
+        if (!Auth::check() || !in_array(Auth::user()->role, ['inspektorat', 'admin'])) {
+            abort(403, 'Akses terbatas untuk Auditor Inspektorat dan Administrator.');
+        }
     }
 
     /**
@@ -30,6 +29,7 @@ class VerifikasiInspektoratController extends Controller
      */
     public function index(Request $request)
     {
+        $this->checkAccess();
         $tahun = session('tahun_login', date('Y'));
         $statusFilter = $request->get('status', 'menunggu');
 
@@ -60,6 +60,7 @@ class VerifikasiInspektoratController extends Controller
      */
     public function review(Transaksi $transaksi)
     {
+        $this->checkAccess();
         $transaksi->load(['skpd', 'rekening', 'user', 'bankChecker', 'checker', 'verifikasiLogs.user']);
         $namaBulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
 
@@ -74,6 +75,7 @@ class VerifikasiInspektoratController extends Controller
      */
     public function approve(Request $request, Transaksi $transaksi)
     {
+        $this->checkAccess();
         $request->validate([
             'nomor_ba' => 'required|string|max:255',
             'catatan' => 'nullable|string|max:500',
@@ -119,6 +121,7 @@ class VerifikasiInspektoratController extends Controller
      */
     public function revisi(Request $request, Transaksi $transaksi)
     {
+        $this->checkAccess();
         $request->validate([
             'catatan' => 'required|string|max:500',
         ], [

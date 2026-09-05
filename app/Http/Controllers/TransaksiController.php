@@ -88,7 +88,7 @@ class TransaksiController extends Controller
 
     public function create()
     {
-        if (Auth::user()->role === 'konsolidator') abort(403);
+        if (!in_array(Auth::user()->role, ['admin', 'operator'])) abort(403, 'Akses ditolak. Entri dan manipulasi transaksi hanya dapat dilakukan oleh Operator SKPD atau Administrator.');
         $skpds = Skpd::where('status', true)->orderBy('nama')->get();
         // Get all active rekenings. If user is operator, filter by their SKPD.
         $rekeningQuery = Rekening::where('status', true);
@@ -102,7 +102,7 @@ class TransaksiController extends Controller
 
     public function store(StoreTransaksiRequest $request)
     {
-        if (Auth::user()->role === 'konsolidator') abort(403);
+        if (!in_array(Auth::user()->role, ['admin', 'operator'])) abort(403, 'Akses ditolak. Entri dan manipulasi transaksi hanya dapat dilakukan oleh Operator SKPD atau Administrator.');
 
         $validated = $request->validated();
 
@@ -138,7 +138,7 @@ class TransaksiController extends Controller
 
     public function edit(Transaksi $transaksi)
     {
-        if (Auth::user()->role === 'konsolidator') abort(403);
+        if (!in_array(Auth::user()->role, ['admin', 'operator'])) abort(403, 'Akses ditolak. Entri dan manipulasi transaksi hanya dapat dilakukan oleh Operator SKPD atau Administrator.');
         if ($transaksi->status_verifikasi === 'verified' && Auth::user()->role === 'operator') {
             abort(403, 'Transaksi yang sudah diverifikasi tidak dapat diubah oleh SKPD. Silakan hubungi Admin Pusat untuk mengubah status menjadi Draft.');
         }
@@ -156,7 +156,7 @@ class TransaksiController extends Controller
 
     public function update(UpdateTransaksiRequest $request, Transaksi $transaksi)
     {
-        if (Auth::user()->role === 'konsolidator') abort(403);
+        if (!in_array(Auth::user()->role, ['admin', 'operator'])) abort(403, 'Akses ditolak. Entri dan manipulasi transaksi hanya dapat dilakukan oleh Operator SKPD atau Administrator.');
         if ($transaksi->status_verifikasi === 'verified' && Auth::user()->role === 'operator') {
             abort(403, 'Transaksi yang sudah diverifikasi tidak dapat diubah oleh SKPD.');
         }
@@ -201,7 +201,7 @@ class TransaksiController extends Controller
 
     public function destroy(Transaksi $transaksi)
     {
-        if (Auth::user()->role === 'konsolidator') abort(403);
+        if (!in_array(Auth::user()->role, ['admin', 'operator'])) abort(403, 'Akses ditolak. Entri dan manipulasi transaksi hanya dapat dilakukan oleh Operator SKPD atau Administrator.');
         if ($transaksi->status_verifikasi === 'verified' && Auth::user()->role === 'operator') {
             abort(403, 'Transaksi yang sudah diverifikasi tidak dapat dihapus.');
         }
@@ -220,6 +220,10 @@ class TransaksiController extends Controller
 
     public function uploadForm(Transaksi $transaksi)
     {
+        if (!in_array(Auth::user()->role, ['admin', 'operator'])) {
+            abort(403, 'Hanya Administrator dan Operator SKPD yang berhak mengunggah berkas.');
+        }
+
         // Check operator access
         if (Auth::user()->role === 'operator' && Auth::user()->skpd_id != $transaksi->skpd_id) {
             abort(403);
@@ -236,7 +240,7 @@ class TransaksiController extends Controller
 
     public function uploadStore(UploadTransaksiRequest $request, Transaksi $transaksi)
     {
-        if (Auth::user()->role === 'konsolidator') abort(403);
+        if (!in_array(Auth::user()->role, ['admin', 'operator'])) abort(403, 'Akses ditolak. Entri dan manipulasi transaksi hanya dapat dilakukan oleh Operator SKPD atau Administrator.');
 
         // Check operator access
         if (Auth::user()->role === 'operator' && Auth::user()->skpd_id != $transaksi->skpd_id) {
@@ -545,6 +549,10 @@ class TransaksiController extends Controller
 
     public function submitToBank(Transaksi $transaksi)
     {
+        if (!in_array(Auth::user()->role, ['admin', 'operator'])) {
+            abort(403, 'Hanya Administrator dan Operator SKPD yang berhak mengajukan transaksi ke Bank.');
+        }
+
         if (Auth::user()->role === 'operator' && Auth::user()->skpd_id != $transaksi->skpd_id) {
             abort(403, 'Anda tidak memiliki hak akses ke transaksi ini.');
         }

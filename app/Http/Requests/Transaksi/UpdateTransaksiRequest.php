@@ -9,7 +9,7 @@ class UpdateTransaksiRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true;
+        return auth()->check() && in_array(auth()->user()->role, ['admin', 'operator']);
     }
 
     public function rules(): array

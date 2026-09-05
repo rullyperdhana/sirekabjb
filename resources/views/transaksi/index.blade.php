@@ -9,7 +9,7 @@
                 <h1 class="font-headline-lg text-headline-lg text-on-surface">Data Transaksi Rekonsiliasi</h1>
                 <p class="font-body-md text-body-md text-on-surface-variant mt-1">Kelola data input rekonsiliasi bulanan SKPD.</p>
             </div>
-            @if(Auth::user()->role !== 'konsolidator')
+            @if(in_array(Auth::user()->role, ['admin', 'operator']))
             <a href="{{ route('transaksi.create') }}" class="bg-primary text-on-primary px-4 py-2 rounded flex items-center space-x-2 hover:bg-primary-container hover:text-on-primary-container transition-colors shadow-sm self-start md:self-auto font-label-sm text-label-sm">
                 <span class="material-symbols-outlined text-[18px]">add</span>
                 <span>Input Transaksi Baru</span>
@@ -188,7 +188,7 @@
                                     @endif
 
                                     <!-- Tombol Edit & Hapus untuk Operator / Admin -->
-                                    @if(Auth::user()->role !== 'konsolidator')
+                                    @if(in_array(Auth::user()->role, ['admin', 'operator']))
                                         @if(in_array($trx->tahap_verifikasi, ['skpd_draft', 'revisi_bank', 'revisi_konsolidator']) || Auth::user()->role === 'admin')
                                         <a href="{{ route('transaksi.edit', $trx->id) }}" class="inline-flex items-center justify-center w-8 h-8 rounded-lg text-primary hover:bg-primary/10 transition-colors" title="Edit Transaksi">
                                             <span class="material-symbols-outlined text-[18px]">edit</span>

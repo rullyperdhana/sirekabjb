@@ -10,6 +10,10 @@ class PengaturanController extends Controller
 {
     public function edit()
     {
+        if (!auth()->check() || !in_array(auth()->user()->role, ['admin', 'operator'])) {
+            abort(403, 'Akses ditolak. Pengaturan instansi hanya diperuntukkan bagi Administrator dan Operator SKPD.');
+        }
+
         $skpdId = auth()->user()->skpd_id;
         $skpdName = auth()->user()->skpd ? auth()->user()->skpd->nama : 'BADAN PENGELOLAAN KEUANGAN DAN ASET DAERAH';
         
@@ -40,6 +44,10 @@ class PengaturanController extends Controller
 
     public function update(Request $request)
     {
+        if (!auth()->check() || !in_array(auth()->user()->role, ['admin', 'operator'])) {
+            abort(403, 'Akses ditolak. Pengaturan instansi hanya diperuntukkan bagi Administrator dan Operator SKPD.');
+        }
+
         $skpdId = auth()->user()->skpd_id;
         $pengaturan = Pengaturan::firstOrCreate(['skpd_id' => $skpdId]);
         

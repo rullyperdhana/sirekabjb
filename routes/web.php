@@ -19,7 +19,7 @@ use App\Http\Controllers\VerifikasiController;
 // Public Routes
 Route::get('/storage-stream/{path}', [\App\Http\Controllers\StorageConfigController::class, 'streamFile'])->where('path', '.*')->name('storage.stream');
 Route::get('/maintenance-notice', [\App\Http\Controllers\MaintenanceController::class, 'notice'])->name('maintenance.notice');
-Route::get('/verifikasi/{id}', [VerifikasiController::class, 'show'])->name('verifikasi.show')->middleware('signed');
+Route::get('/verifikasi/{id}', [VerifikasiController::class, 'show'])->whereNumber('id')->name('verifikasi.show')->middleware('signed');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -85,19 +85,27 @@ Route::middleware('auth')->group(function () {
     Route::post('/transaksi/{transaksi}/submit-bank', [\App\Http\Controllers\TransaksiController::class, 'submitToBank'])->name('transaksi.submit-bank');
 
     // Pilar 2: Verifikasi Rekening Koran (Pihak Bank & Admin)
-    Route::get('/verifikasi/bank', [\App\Http\Controllers\VerifikasiBankController::class, 'index'])->name('verifikasi.bank.index');
-    Route::get('/verifikasi/bank/{transaksi}', [\App\Http\Controllers\VerifikasiBankController::class, 'review'])->name('verifikasi.bank.review');
-    Route::post('/verifikasi/bank/{transaksi}/approve', [\App\Http\Controllers\VerifikasiBankController::class, 'approve'])->name('verifikasi.bank.approve');
-    Route::post('/verifikasi/bank/{transaksi}/revisi', [\App\Http\Controllers\VerifikasiBankController::class, 'revisi'])->name('verifikasi.bank.revisi');
+    Route::middleware(['role.bank'])->group(function () {
+        Route::get('/verifikasi/bank', [\App\Http\Controllers\VerifikasiBankController::class, 'index'])->name('verifikasi.bank.index');
+        Route::get('/verifikasi/bank/{transaksi}', [\App\Http\Controllers\VerifikasiBankController::class, 'review'])->name('verifikasi.bank.review');
+        Route::post('/verifikasi/bank/{transaksi}/approve', [\App\Http\Controllers\VerifikasiBankController::class, 'approve'])->name('verifikasi.bank.approve');
+        Route::post('/verifikasi/bank/{transaksi}/revisi', [\App\Http\Controllers\VerifikasiBankController::class, 'revisi'])->name('verifikasi.bank.revisi');
+    });
 
     // Pilar 4: Pengawasan & Pengesahan BA (Inspektorat & Admin)
-    Route::get('/verifikasi/inspektorat', [\App\Http\Controllers\VerifikasiInspektoratController::class, 'index'])->name('verifikasi.inspektorat.index');
-    Route::get('/verifikasi/inspektorat/{transaksi}', [\App\Http\Controllers\VerifikasiInspektoratController::class, 'review'])->name('verifikasi.inspektorat.review');
-    Route::post('/verifikasi/inspektorat/{transaksi}/approve', [\App\Http\Controllers\VerifikasiInspektoratController::class, 'approve'])->name('verifikasi.inspektorat.approve');
-    Route::post('/verifikasi/inspektorat/{transaksi}/revisi', [\App\Http\Controllers\VerifikasiInspektoratController::class, 'revisi'])->name('verifikasi.inspektorat.revisi');
+    Route::middleware(['role.inspektorat'])->group(function () {
+        Route::get('/verifikasi/inspektorat', [\App\Http\Controllers\VerifikasiInspektoratController::class, 'index'])->name('verifikasi.inspektorat.index');
+        Route::get('/verifikasi/inspektorat/{transaksi}', [\App\Http\Controllers\VerifikasiInspektoratController::class, 'review'])->name('verifikasi.inspektorat.review');
+        Route::post('/verifikasi/inspektorat/{transaksi}/approve', [\App\Http\Controllers\VerifikasiInspektoratController::class, 'approve'])->name('verifikasi.inspektorat.approve');
+        Route::post('/verifikasi/inspektorat/{transaksi}/revisi', [\App\Http\Controllers\VerifikasiInspektoratController::class, 'revisi'])->name('verifikasi.inspektorat.revisi');
+    });
 
-    // Master Data (All Users)
-    Route::resource('master/rekening', RekeningController::class);
+    // Master Rekening & Pengaturan Instansi (Khusus Admin & Operator SKPD)
+    Route::middleware(['role.operator'])->group(function () {
+        Route::resource('master/rekening', RekeningController::class);
+        Route::get('pengaturan/instansi', [\App\Http\Controllers\PengaturanController::class, 'edit'])->name('pengaturan.instansi.edit');
+        Route::put('pengaturan/instansi', [\App\Http\Controllers\PengaturanController::class, 'update'])->name('pengaturan.instansi.update');
+    });
     
     // Transaksi (All Users)
     Route::get('transaksi/get-saldo-awal', [TransaksiController::class, 'getSaldoAwal'])->name('transaksi.getSaldoAwal');
@@ -122,10 +130,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/laporan/ringkasan-selisih', [\App\Http\Controllers\LaporanController::class, 'ringkasanSelisih'])->name('laporan.ringkasan-selisih');
     Route::get('/laporan/ringkasan-selisih/pdf', [\App\Http\Controllers\LaporanController::class, 'cetakRingkasanSelisih'])->name('laporan.ringkasan-selisih.pdf');
     Route::get('/laporan/ringkasan-selisih/excel', [\App\Http\Controllers\LaporanController::class, 'eksporRingkasanSelisih'])->name('laporan.ringkasan-selisih.excel');
-
-    // Pengaturan Instansi (All Users)
-    Route::get('pengaturan/instansi', [\App\Http\Controllers\PengaturanController::class, 'edit'])->name('pengaturan.instansi.edit');
-    Route::put('pengaturan/instansi', [\App\Http\Controllers\PengaturanController::class, 'update'])->name('pengaturan.instansi.update');
 
     // Pengaturan Password (All Users)
     Route::get('pengaturan/password', [\App\Http\Controllers\PasswordController::class, 'edit'])->name('password.edit');

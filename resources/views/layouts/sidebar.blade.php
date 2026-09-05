@@ -40,7 +40,8 @@
             </a>
         </li>
 
-        <!-- Master Data -->
+        <!-- Master Data (Admin & Operator SKPD Saja) -->
+        @if(in_array(auth()->user()->role, ['admin', 'operator']))
         <li class="group/menu">
             @php $isMasterData = request()->routeIs('skpd.*', 'rekening.*', 'tahun.*'); @endphp
             <button class="w-full relative rounded-xl flex items-center justify-between px-4 py-3 transition-all duration-300 {{ $isMasterData ? 'bg-primary-container/30 text-on-primary' : 'text-on-primary/80 hover:text-on-primary hover:bg-primary-container/50' }}" onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('.arrow').classList.toggle('rotate-180')">
@@ -75,15 +76,16 @@
                 @endif
             </ul>
         </li>
+        @endif
 
-        <!-- Data Entri -->
+        <!-- Data Entri / Monitoring Transaksi -->
         <li>
             <a class="group relative rounded-xl flex items-center gap-3 px-4 py-3 transition-all duration-300 {{ request()->routeIs('transaksi.*') && !request()->routeIs('transaksi.create') && !request()->routeIs('transaksi.antrean') ? 'bg-secondary-container text-on-secondary-container' : 'text-on-primary/80 hover:text-on-primary hover:bg-primary-container/50' }}" href="{{ route('transaksi.index') }}">
                 @if(request()->routeIs('transaksi.*') && !request()->routeIs('transaksi.create') && !request()->routeIs('transaksi.antrean'))
                     <div class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-on-secondary-container rounded-r-full"></div>
                 @endif
                 <span class="material-symbols-outlined group-hover:scale-110 transition-transform duration-300" data-weight="300">swap_horiz</span>
-                <span class="text-label-sm font-label-sm group-hover:translate-x-1 transition-transform duration-300">Data Entri</span>
+                <span class="text-label-sm font-label-sm group-hover:translate-x-1 transition-transform duration-300">{{ in_array(auth()->user()->role, ['admin', 'operator']) ? 'Data Entri' : 'Monitoring Transaksi' }}</span>
             </a>
         </li>
 
@@ -194,6 +196,14 @@
                     </a>
                 </li>
                 <li>
+                    <a class="relative text-on-primary/70 hover:text-emerald-400 rounded-lg flex items-center gap-3 px-4 py-2 ml-8 transition-all duration-300 group-hover:translate-x-1" href="{{ route('laporan.rekap-wa') }}">
+                        <div class="absolute left-[-1.15rem] top-1/2 -translate-y-1/2 w-3 h-[1px] bg-on-primary/20"></div>
+                        <span class="text-label-sm font-label-sm group-hover:translate-x-1 transition-transform duration-300">Broadcast Rekap WA</span>
+                    </a>
+                </li>
+                @endif
+                @if(in_array(auth()->user()->role, ['admin', 'konsolidator', 'inspektorat']))
+                <li>
                     <a class="relative text-on-primary/70 hover:text-on-primary rounded-lg flex items-center gap-3 px-4 py-2 ml-8 transition-all duration-300 group-hover:translate-x-1" href="{{ route('dokumen.tree') }}">
                         <div class="absolute left-[-1.15rem] top-1/2 -translate-y-1/2 w-3 h-[1px] bg-on-primary/20"></div>
                         <span class="text-label-sm font-label-sm group-hover:translate-x-1 transition-transform duration-300">Arsip Dokumen (Tree)</span>
@@ -203,12 +213,6 @@
                     <a class="relative text-on-primary/70 hover:text-on-primary rounded-lg flex items-center gap-3 px-4 py-2 ml-8 transition-all duration-300 group-hover:translate-x-1" href="{{ route('laporan.konsolidasi') }}">
                         <div class="absolute left-[-1.15rem] top-1/2 -translate-y-1/2 w-3 h-[1px] bg-on-primary/20"></div>
                         <span class="text-label-sm font-label-sm group-hover:translate-x-1 transition-transform duration-300">Konsolidasi Daerah</span>
-                    </a>
-                </li>
-                <li>
-                    <a class="relative text-on-primary/70 hover:text-emerald-400 rounded-lg flex items-center gap-3 px-4 py-2 ml-8 transition-all duration-300 group-hover:translate-x-1" href="{{ route('laporan.rekap-wa') }}">
-                        <div class="absolute left-[-1.15rem] top-1/2 -translate-y-1/2 w-3 h-[1px] bg-on-primary/20"></div>
-                        <span class="text-label-sm font-label-sm group-hover:translate-x-1 transition-transform duration-300">Broadcast Rekap WA</span>
                     </a>
                 </li>
                 <li>
@@ -258,12 +262,14 @@
                     </a>
                 </li>
                 @endif
+                @if(in_array(auth()->user()->role, ['admin', 'operator']))
                 <li>
                     <a class="relative text-on-primary/70 hover:text-on-primary rounded-lg flex items-center gap-3 px-4 py-2 ml-8 transition-all duration-300 group-hover:translate-x-1" href="{{ route('pengaturan.instansi.edit') }}">
                         <div class="absolute left-[-1.15rem] top-1/2 -translate-y-1/2 w-3 h-[1px] bg-on-primary/20"></div>
                         <span class="text-label-sm font-label-sm group-hover:translate-x-1 transition-transform duration-300">Pengaturan Instansi (Kop)</span>
                     </a>
                 </li>
+                @endif
                 <li>
                     <a class="relative text-on-primary/70 hover:text-on-primary rounded-lg flex items-center gap-3 px-4 py-2 ml-8 transition-all duration-300 group-hover:translate-x-1" href="{{ route('password.edit') }}">
                         <div class="absolute left-[-1.15rem] top-1/2 -translate-y-1/2 w-3 h-[1px] bg-on-primary/20"></div>

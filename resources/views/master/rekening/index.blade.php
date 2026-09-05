@@ -6,7 +6,7 @@
                 <h2 class="text-headline-lg font-headline-lg text-primary">Master Rekening</h2>
                 <p class="text-body-lg font-body-lg text-on-surface-variant mt-1">Kelola data rekening bank dan kode buku besar (GL).</p>
             </div>
-            @if(auth()->user()->role !== 'konsolidator')
+            @if(in_array(auth()->user()->role, ['admin', 'operator']))
             <a href="{{ route('rekening.create') }}" class="bg-primary text-on-primary hover:bg-primary/90 px-4 py-2 rounded-lg flex items-center gap-2 font-label-sm text-label-sm shadow-sm transition-colors">
                 <span class="material-symbols-outlined text-[18px]">add</span>
                 Tambah Rekening Baru
@@ -77,7 +77,7 @@
                             </td>
                             <td class="py-3 px-4 text-right">
                                 <div class="flex justify-end gap-2">
-                                    @if(auth()->user()->role !== 'konsolidator')
+                                    @if(in_array(auth()->user()->role, ['admin', 'operator']))
                                     <a href="{{ route('rekening.edit', $rekening->id) }}" class="w-8 h-8 flex items-center justify-center rounded-md hover:bg-primary-container/20 text-primary transition-colors border border-transparent hover:border-primary-container">
                                         <span class="material-symbols-outlined text-[18px]">edit</span>
                                     </a>
