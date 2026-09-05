@@ -1,36 +1,34 @@
 <section>
-    <header>
+    <header class="border-b border-outline-variant/60 pb-4 mb-6">
         <div class="flex items-center justify-between">
-            <h2 class="text-lg font-medium text-gray-900 flex items-center gap-2">
-                <svg class="w-5 h-5 text-emerald-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                </svg>
-                <span>Autentikasi Dua Langkah (2FA / Google Authenticator)</span>
-            </h2>
+            <div class="flex items-center gap-2.5 text-primary mb-1">
+                <span class="material-symbols-outlined text-[24px]">verified_user</span>
+                <h2 class="text-title-lg font-title-lg font-bold text-on-surface">
+                    Autentikasi Dua Langkah (2FA / TOTP)
+                </h2>
+            </div>
             @if($user->hasTwoFactorEnabled())
-                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
-                    <span class="w-2 h-2 rounded-full bg-emerald-600"></span>
-                    Aktif
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-700 border border-emerald-500/30 shadow-sm">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                    Aktif Terlindungi
                 </span>
             @else
-                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-600 border border-slate-300">
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-slate-500/10 text-slate-600 border border-slate-500/30">
                     <span class="w-2 h-2 rounded-full bg-slate-400"></span>
                     Belum Diaktifkan
                 </span>
             @endif
         </div>
 
-        <p class="mt-1 text-sm text-gray-600">
-            Tambahkan perlindungan keamanan ekstra pada akun Anda menggunakan kode OTP dari aplikasi Google Authenticator, Microsoft Authenticator, atau Authy di smartphone.
+        <p class="text-body-md font-body-md text-on-surface-variant">
+            Tambahkan lapisan proteksi keamanan ekstra menggunakan kode sandi sekali pakai (TOTP) dari aplikasi Google Authenticator, Microsoft Authenticator, atau Authy di smartphone Anda.
         </p>
 
         @if(!$pengaturan || !$pengaturan->is_2fa_active)
-            <div class="mt-3 p-3 bg-amber-50 border border-amber-200 rounded-lg text-xs text-amber-800 flex items-start gap-2">
-                <svg class="w-4 h-4 text-amber-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
+            <div class="mt-4 p-3.5 bg-amber-500/10 border border-amber-500/25 rounded-xl text-xs text-amber-900 flex items-start gap-2.5">
+                <span class="material-symbols-outlined text-amber-600 text-[18px] shrink-0 mt-0.5">info</span>
                 <div>
-                    <b>Status Kebijakan: Mode Standby.</b> 2FA secara global saat ini belum diwajibkan oleh Admin Pusat. Anda tetap dapat menyiapkan dan mengaktifkannya sekarang untuk proteksi mandiri akun Anda.
+                    <b>Status Kebijakan: Mode Siaga (Standby).</b> Kebijakan 2FA global saat ini opsional oleh Admin BPKAD. Anda disarankan mengaktifkannya untuk perlindungan mandiri akun kedinasan Anda.
                 </div>
             </div>
         @endif

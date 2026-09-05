@@ -17,6 +17,7 @@ class ProfileController extends Controller
     public function edit(Request $request): View
     {
         $user = $request->user();
+        $user->load('skpd');
         $pengaturan = \App\Models\Pengaturan::whereNull('skpd_id')->first();
         $google2fa = new \PragmaRX\Google2FA\Google2FA();
 
@@ -65,23 +66,10 @@ class ProfileController extends Controller
     }
 
     /**
-     * Delete the user's account.
+     * Delete the user's account (Disabled for government audit compliance).
      */
     public function destroy(Request $request): RedirectResponse
     {
-        $request->validateWithBag('userDeletion', [
-            'password' => ['required', 'current_password'],
-        ]);
-
-        $user = $request->user();
-
-        Auth::logout();
-
-        $user->delete();
-
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-
-        return Redirect::to('/');
+        return Redirect::route('profile.edit')->with('error', 'Penghapusan akun kedinasan secara mandiri dinonaktifkan demi integritas jejak audit sistem rekonsiliasi kas daerah. Hubungi Administrator BPKAD untuk penonaktifan akun.');
     }
 }
