@@ -271,6 +271,12 @@
                 </li>
                 @endif
                 <li>
+                    <a class="relative text-on-primary/70 hover:text-on-primary rounded-lg flex items-center gap-3 px-4 py-2 ml-8 transition-all duration-300 group-hover:translate-x-1 {{ request()->routeIs('profile.edit') ? 'text-white font-semibold' : '' }}" href="{{ route('profile.edit') }}">
+                        <div class="absolute left-[-1.15rem] top-1/2 -translate-y-1/2 w-3 h-[1px] bg-on-primary/20"></div>
+                        <span class="text-label-sm font-label-sm group-hover:translate-x-1 transition-transform duration-300">Profil Saya</span>
+                    </a>
+                </li>
+                <li>
                     <a class="relative text-on-primary/70 hover:text-on-primary rounded-lg flex items-center gap-3 px-4 py-2 ml-8 transition-all duration-300 group-hover:translate-x-1" href="{{ route('password.edit') }}">
                         <div class="absolute left-[-1.15rem] top-1/2 -translate-y-1/2 w-3 h-[1px] bg-on-primary/20"></div>
                         <span class="text-label-sm font-label-sm group-hover:translate-x-1 transition-transform duration-300">Ubah Password</span>
@@ -302,6 +308,18 @@
 
     <!-- Bottom Actions -->
     <div class="mt-auto px-4 space-y-2 pb-4">
+        <!-- Kartu Profil Pengguna -->
+        <a href="{{ route('profile.edit') }}" class="group/user rounded-xl flex items-center gap-3 p-2.5 bg-primary-container/40 hover:bg-primary-container/80 text-on-primary transition-all duration-300 {{ request()->routeIs('profile.*') ? 'ring-1 ring-secondary-container bg-primary-container/80' : '' }}" title="Kelola Profil Saya">
+            <div class="w-9 h-9 rounded-lg bg-secondary-container text-on-secondary-container flex items-center justify-center font-bold text-xs shadow-inner shrink-0 group-hover/user:scale-105 transition-transform">
+                {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
+            </div>
+            <div class="flex-1 min-w-0">
+                <p class="text-xs font-semibold truncate text-white leading-tight">{{ auth()->user()->name }}</p>
+                <p class="text-[10px] text-on-primary/70 truncate capitalize">{{ auth()->user()->role }}</p>
+            </div>
+            <span class="material-symbols-outlined text-[18px] text-on-primary/60 group-hover/user:text-white transition-colors">badge</span>
+        </a>
+
         <a class="text-on-primary/80 hover:text-on-primary hover:bg-primary-container/50 rounded-lg flex items-center gap-3 px-4 py-3 scale-95 active:scale-90 transition-transform" href="#">
             <span class="material-symbols-outlined">help</span>
             <span class="text-label-sm font-label-sm">Bantuan</span>
